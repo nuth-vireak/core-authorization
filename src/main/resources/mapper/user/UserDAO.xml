@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.core.authorization.repository.UserDAO">
+
+<select id="getUserbyId" resultType="GData">
+	<![CDATA[
+		SELECT
+			USERID				AS 	"userid"
+			, PWD				AS 	"pwd"
+			, FULLNAME			AS 	"fullname"
+			, DEPARTMENT		AS 	"department"
+			, POSITION			AS 	"position"
+			, PHONE				AS 	"phone"
+			, NOTE				AS 	"note"
+			, PRIVILEGEINFO		AS 	"privilegeinfo"
+			, EMPLOYEEID		AS 	"employeeid"
+			, EMAIL				AS 	"email"
+			, STATUS			AS 	"status"
+			, CREATEBY			AS 	"createby"
+			, UPDATEBY			AS 	"updateby"
+			, ONLINE			AS 	"online"
+			, CHANNEL			AS 	"channel"
+			, OTP				AS 	"otp"
+			, LOCKDATE			AS 	"lockdate"
+			, CREATEDATE		AS 	"createdate"
+			, UPDATEDATE		AS 	"updatedate"
+			, PASSWORDEXPIRY	AS 	"passwordexpiry"
+		FROM USERCLIENT
+			WHERE USERID 	= 	#{userName}
+	]]>
+</select>
+
+</mapper>

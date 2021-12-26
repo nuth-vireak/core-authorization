@@ -1,0 +1,21 @@
+spring:
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        jdbcUrl: jdbc:postgresql://45.32.116.206:5432/postgres
+        username: postgres
+        password: kheang
+        initialization-mode: always
+        
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  config-location: classpath:mybatis_config.xml
+# --- server
+server:
+  port: 8181
+  
+logging:
+  level: 
+    com.brojum.admin.repository: debug
+    
+
+

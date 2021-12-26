@@ -17,15 +17,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'org.postgresql:postgresql'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.2'
 	testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '5.6.1'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.6.2'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.2.0'
-	implementation group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.6.1'
-	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.6.1'
-	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-jose', version: '5.6.1'
-	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-core', version: '5.6.1'
+	implementation group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.0.2.RELEASE'
+	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.3.4.RELEASE'
+	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-jose', version: '5.3.4.RELEASE'
+	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-core', version: '5.3.5.RELEASE'
 	implementation files('lib/jara.jar')
 	implementation files('lib/commons-lang3-3.7.jar')
 	implementation files('lib/javax.mail.jar')
