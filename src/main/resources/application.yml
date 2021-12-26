@@ -11,7 +11,7 @@ mybatis:
   config-location: classpath:mybatis_config.xml
 # --- server
 server:
-  port: 8181
+  port: 8282
   
 logging:
   level: 
