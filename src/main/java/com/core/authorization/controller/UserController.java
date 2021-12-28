@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jara.platform.collection.GData;
+
 @RestController
 @RequestMapping("/doctor")
 @PreAuthorize("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
@@ -15,8 +17,10 @@ public class UserController {
 	private Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@GetMapping("/get")
-	public String home() {
-		return "sample for request resource";
+	public GData home() {
+		GData data = new GData();
+		data.put("message", "sample for request resource");
+		return data;
 	}
 
 }
