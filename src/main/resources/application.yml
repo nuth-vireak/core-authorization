@@ -12,6 +12,8 @@ mybatis:
 # --- server
 server:
   port: 8282
+  error:
+    include-message: always
   
 logging:
   level: 
