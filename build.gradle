@@ -31,6 +31,8 @@ dependencies {
 	implementation files('lib/commons-lang3-3.7.jar')
 	implementation files('lib/javax.mail.jar')
 	implementation files('lib/slf4j-api-1.7.25.jar')
+	implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+    implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
 }
 
 test {
