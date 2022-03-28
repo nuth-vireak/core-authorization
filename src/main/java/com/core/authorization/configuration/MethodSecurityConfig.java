@@ -1,8 +1,5 @@
 package com.core.authorization.configuration;
 
-/**
- * Created by Sokkheang Huo
- */
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;

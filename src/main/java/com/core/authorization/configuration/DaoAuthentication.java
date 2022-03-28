@@ -16,10 +16,6 @@ import com.core.authorization.repository.UserDAO;
 
 import jara.platform.collection.GData;
 
-/**
- * @author sokkheang.huo
- *
- */
 
 @Component
 public class DaoAuthentication implements AuthenticationProvider {

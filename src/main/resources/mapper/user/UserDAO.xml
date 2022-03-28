@@ -2,32 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.core.authorization.repository.UserDAO">
 
-<select id="getUserbyId" resultType="GData">
+	<select id="getUserbyId" resultType="GData">
 	<![CDATA[
-		SELECT
-			USERID				AS 	"userid"
-			, PWD				AS 	"pwd"
-			, FULLNAME			AS 	"fullname"
-			, DEPARTMENT		AS 	"department"
-			, POSITION			AS 	"position"
-			, PHONE				AS 	"phone"
-			, NOTE				AS 	"note"
-			, PRIVILEGEINFO		AS 	"privilegeinfo"
-			, EMPLOYEEID		AS 	"employeeid"
-			, EMAIL				AS 	"email"
-			, STATUS			AS 	"status"
-			, CREATEBY			AS 	"createby"
-			, UPDATEBY			AS 	"updateby"
-			, ONLINE			AS 	"online"
-			, CHANNEL			AS 	"channel"
-			, OTP				AS 	"otp"
-			, LOCKDATE			AS 	"lockdate"
-			, CREATEDATE		AS 	"createdate"
-			, UPDATEDATE		AS 	"updatedate"
-			, PASSWORDEXPIRY	AS 	"passwordexpiry"
-		FROM USERCLIENT
-			WHERE USERID 	= 	#{userName}
+		SELECT 
+				USER_ID  AS "userid" 
+			, 	password  AS "pwd" 
+		FROM MERCHANT.USERS  
+			WHERE USER_ID 	= 	#{userName}
 	]]>
-</select>
+	</select>
+
+	<select id="retrieveUserInfoByUserID" resultType="GData">
+	<![CDATA[
+		SELECT   /* FUTOR /Mapper/UserDAO.xml - retriveUserInfoByUserID */
+				  user_id 					AS "userID" 				 -- UserID
+				, servicestatuscode 		AS "serviceStatusCode" 		 -- ServiceStatusCode
+				, lastlogindate 			AS "lastloginDate" 			 -- LastLoginDate
+				, lastloginhms 				AS "lastloginTime" 			 -- LastLoginHMS
+				, firstlogindate  			AS "firstloginDate"			 -- FirstLoginDate
+				, "password" 				AS "password" 				 -- password
+				, userpassworderrorcount 	AS "userPasswordErrorCount"  -- UserPasswordErrorCount
+				, passwordchangedate 		AS "passwordChangeDate"		 -- PasswordChangeDate
+				, serviceceasedate  		AS "serviceCaseDate" 		 -- ServiceCeaseDate
+				, profile  					AS "prfile"					 -- profile
+				, creationid  				AS "createID"				 -- creationID
+				, creationdatetime 			AS "createDateTime" 		 -- creationDatetime
+				, updateid 					AS "updateID"
+				, updatedatetime 			AS "updateDateTime"
+				, subidyn 					AS "subUserYN" 				 -- subIDYN
+				, masteruserid 				AS "masterUserID" 			 -- masterUserID
+			FROM MERCHANT.USERS WHERE USER_ID = #{userID}
+	]]>
+	</select>
+	
+	<update id="updateUserLoginSuccess" >
+	  <![CDATA[
+	   UPDATE MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - updateUserLoginSuccess */
+			 SET  SERVICESTATUSCODE 	 =  #{serviceStatusCode}
+			 	, LASTLOGINDATE 		 = 	#{lastloginDate}
+			 	, LASTLOGINHMS 			 = 	#{lastloginTime}
+			 	, USERPASSWORDERRORCOUNT = 	#{userPasswordErrorCount}
+			 	, PASSWORDCHANGEDATE 	 =  COALESCE(#{passwordChangeDate}, null )
+			 	, SERVICECEASEDATE 		 = 	COALESCE(#{serviceCaseDate}, null )
+		WHERE USER_ID = #{userID}
+	  ]]>
+	</update>
 
 </mapper>

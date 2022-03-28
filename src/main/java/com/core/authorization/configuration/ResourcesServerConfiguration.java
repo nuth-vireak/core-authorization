@@ -14,9 +14,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-/**
- * Created by Sokkheang Huo on 30.5.18.
- */
 
 @EnableResourceServer
 @Configuration

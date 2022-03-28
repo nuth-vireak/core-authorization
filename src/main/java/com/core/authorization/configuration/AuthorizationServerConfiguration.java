@@ -22,10 +22,6 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-/**
- * Created by Sokkheang on 21.5.18.
- */
-
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {

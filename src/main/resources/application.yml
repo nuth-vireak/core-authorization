@@ -1,9 +1,9 @@
 spring:
     datasource:
         driver-class-name: org.postgresql.Driver
-        jdbcUrl: jdbc:postgresql://45.32.116.206:5432/postgres
+        jdbcUrl: jdbc:postgresql://localhost:5432/postgres
         username: postgres
-        password: kheang
+        password: Dalin@1998$$
         initialization-mode: always
         
 mybatis:
@@ -15,9 +15,9 @@ server:
   error:
     include-message: always
   
+
+    
 logging:
   level: 
-    com.brojum.admin.repository: debug
-    
-
+    com.core.authorization.repository: debug
 

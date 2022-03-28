@@ -1,12 +1,11 @@
 <!DOCTYPE logback>
 <configuration>
 
-	<property name="rootDir" value="./api_core/log" />
+	<property name="rootDir" 	value="./applog/log" />
 	<property name="archiveDir" value="${rootDir}/archived" />
-	<property name="fileSize" value="10MB" />
-	
-	<property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n" />
-
+	<property name="fileSize" 	value="10MB" />
+	<property name="pattern" 	value="%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n" />
+    
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
 			<pattern>${pattern}</pattern>
@@ -14,65 +13,78 @@
     </appender>
  
 	<appender name="DEBUG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${rootDir}/debug.log</file>
+		<file>./applog/log/debug.log</file>
 		<encoder>
-			<pattern>${pattern}</pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n</pattern>
 		</encoder>
 	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 		 	<level>DEBUG</level>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${archiveDir}/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-		    <maxFileSize>${fileSize}</maxFileSize>
+			<fileNamePattern>./applog/log/archived/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+		    <maxFileSize>10MB</maxFileSize>
 		</rollingPolicy>
 	</appender>
 	
+	<appender name="INFO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>./applog/log/info.log</file>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n</pattern>
+		</encoder>
+	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+		 	<level>INFO</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>./applog/log/archived/info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+		   <maxFileSize>10MB</maxFileSize>
+		</rollingPolicy>
+	</appender>
 	
 	<!-- error file logger -->
 	<appender name="ERROR-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${rootDir}/error.log</file>
+		<file>./applog/log/error.log</file>
 		<encoder>
-			<pattern>${pattern}</pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%level] %logger{36} - %msg%n</pattern>
 		</encoder>
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 		 	<level>ERROR</level>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${archiveDir}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-			<maxFileSize>${fileSize}</maxFileSize>
+			<fileNamePattern>./applog/log/archived/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
 		</rollingPolicy>
 	</appender>
 	
-	<logger name="org.springframework.core" level="INFO" additivity="true"/>
-	<logger name="org.springframework.beans" level="INFO" additivity="true"/>
-	<logger name="org.springframework.context" level="INFO" additivity="true"/>
-	<logger name="org.springframework.web" level="INFO" additivity="true"/>
-	<logger name="jara.platform.collection.GListData" level="INFO" additivity="true"/>
-	<logger name="jara.platform.collection.GData" level="INFO" additivity="true"/>
-	<logger name="org.mybatis" level="DEBUG" />
-	<logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="DEBUG" />
+	<logger name="org.springframework.core" 			level="INFO" 			additivity="true"/>
+	<logger name="org.springframework.beans" 			level="INFO" 			additivity="true"/>
+	<logger name="org.springframework.context" 			level="INFO" 			additivity="true"/>
+	<logger name="org.springframework.web" 				level="INFO" 			additivity="true"/>
+	<logger name="jara.platform.collection.GListData" 	level="INFO" 			additivity="true"/>
+	<logger name="jara.platform.collection.GData" 		level="INFO" 			additivity="true"/>
+	<logger name="org.mybatis" 							level="DEBUG" />
+	<logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" 	level="DEBUG" />
 	
-    <logger name="com.big.auth.controller" level="DEBUG" />
-    
     <!-- mybatis loggers -->
     <logger name="com.ibatis" level="DEBUG" />
-    <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />
-    <logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />
-    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
+    <logger name="com.ibatis.common.jdbc.SimpleDataSource" 						level="DEBUG" />
+    <logger name="com.ibatis.common.jdbc.ScriptRunner" 							level="DEBUG" />
+    <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" 			level="DEBUG" />
     <!-- sql loggers -->
-    <logger name="java.sql.Connection" level="DEBUG"  additivity="true"/>
-    <logger name="java.sql.Statement" level="DEBUG" additivity="true" />
-    <logger name="java.sql.PreparedStatement" level="=debug,stdout"  additivity="true"/>
-    <logger name="java.sql.ResultSet" level="DEBUG"  additivity="true"/>
+    <logger name="java.sql.Connection" 					level="DEBUG"  			additivity="true"/>
+    <logger name="java.sql.Statement" 					level="DEBUG" 			additivity="true" />
+    <logger name="java.sql.PreparedStatement" 			level="=debug,stdout"  	additivity="true"/>
+    <logger name="java.sql.ResultSet" 					level="DEBUG"  			additivity="true"/>
     
-    <logger name="com.api.core.repository" level="DEBUG"/>
-    <logger name="com.api.core.Controller" level="DEBUG"/>
-    <logger name="com.big.auth.service" level="DEBUG"/>
+    <logger name="com.core.authorization.repository" 	level="DEBUG" 			additivity="true"/>
+    <logger name="com.core.authorization.controller" 	level="DEBUG" 			additivity="true"/>
+    <logger name="com.core.authorization.service" 		level="DEBUG" 			additivity="true"/>
+    <logger name="com.core.authorization.configuration" level="DEBUG" 			additivity="true"/>
     
-    <root level="INFO">
+    <root level="INFO" >
         <appender-ref ref="STDOUT" />
         <appender-ref ref="DEBUG-FILE"/>
         <appender-ref ref="ERROR-FILE"/>
+        <appender-ref ref="INFO-FILE"/>
     </root>
     
 </configuration>
