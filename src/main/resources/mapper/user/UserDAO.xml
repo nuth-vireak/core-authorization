@@ -42,8 +42,21 @@
 			 	, LASTLOGINDATE 		 = 	#{lastloginDate}
 			 	, LASTLOGINHMS 			 = 	#{lastloginTime}
 			 	, USERPASSWORDERRORCOUNT = 	#{userPasswordErrorCount}
-			 	, PASSWORDCHANGEDATE 	 =  COALESCE(#{passwordChangeDate}, null )
-			 	, SERVICECEASEDATE 		 = 	COALESCE(#{serviceCaseDate}, null )
+			 	, PASSWORDCHANGEDATE 	 =  COALESCE(#{passwordChangeDate}, '' )
+			 	, SERVICECEASEDATE 		 = 	COALESCE(#{serviceCaseDate}, '' )
+		WHERE USER_ID = #{userID}
+	  ]]>
+	</update>
+	
+	<update id="updateUserInfo" >
+	  <![CDATA[
+	   UPDATE MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - updateUserInfo */
+			 SET  SERVICESTATUSCODE 	 =  #{serviceStatusCode}
+			 	, LASTLOGINDATE 		 = 	#{lastloginDate}
+			 	, LASTLOGINHMS 			 = 	#{lastloginTime}
+			 	, USERPASSWORDERRORCOUNT = 	#{userPasswordErrorCount}
+			 	, PASSWORDCHANGEDATE 	 =  COALESCE(#{passwordChangeDate}, '' )
+			 	, SERVICECEASEDATE 		 = 	COALESCE(#{serviceCaseDate}, '' )
 		WHERE USER_ID = #{userID}
 	  ]]>
 	</update>

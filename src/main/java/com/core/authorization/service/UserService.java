@@ -4,7 +4,7 @@ import jara.platform.collection.GData;
 
 public interface UserService {
 
-	int registerUserInformation( GData inputData ) throws Exception;
+	public GData userLogin( GData inputData ) throws Exception;
 	
-	GData userLogin( GData inputData ) throws Exception;
+	public GData registerUserInfo( GData inputData ) throws Exception;
 }

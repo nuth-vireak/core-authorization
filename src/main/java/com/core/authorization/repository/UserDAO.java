@@ -13,4 +13,8 @@ public interface UserDAO {
 	
 	public long updateUserLoginSuccess( GData param ) throws Exception ;
 	
+	public long updateUserInfo( GData param ) throws Exception;
+	
+	public long registerUserInfo( GData param ) throws Exception;
+	
 }

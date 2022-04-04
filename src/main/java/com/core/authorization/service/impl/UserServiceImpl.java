@@ -6,8 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
 import com.core.authorization.repository.UserDAO;
 import com.core.authorization.service.UserService;
@@ -18,6 +19,7 @@ import com.core.authorization.type.YnTypeCode;
 import com.core.authorization.util.GeneratePasswordUtil;
 import com.core.authorization.util.ValidatorUtil;
 
+
 import jara.platform.collection.GData;
 import jara.util.GDateUtil;
 
@@ -26,27 +28,11 @@ public class UserServiceImpl implements UserService {
 	
 	private Logger logger = LoggerFactory.getLogger( UserServiceImpl.class );
 	@Autowired
-	PlatformTransactionManager txtManager;
+	PlatformTransactionManager txManager;
 	@Autowired
 	private UserDAO userDAO;
 	private GeneratePasswordUtil generatePasswordUtil;
 	
-	@Override
-	public int registerUserInformation( GData inputData ) throws Exception {
-		
-		TransactionStatus txtStatus = txtManager.getTransaction(new DefaultTransactionDefinition());
-		
-		try {
-			
-			txtManager.commit( txtStatus );
-		} catch ( Exception e ) {
-			logger.error(">>>>>>>>>> Register User Information Error >>>>>>>>>>: " + e.getMessage() );
-			txtManager.rollback( txtStatus );
-		}
-		
-		return 0;
-	}
-
 	@Override
 	public GData userLogin(GData inputData) throws Exception {
 		
@@ -136,6 +122,92 @@ public class UserServiceImpl implements UserService {
 			throw e;
 		}
 	
+	}
+
+	@Override
+	public GData registerUserInfo( GData inputData ) throws Exception {
+		
+		TransactionStatus 	transaction 	= txManager.getTransaction(  new DefaultTransactionAttribute( TransactionDefinition.PROPAGATION_REQUIRES_NEW )  );
+		try {
+			
+			generatePasswordUtil = new GeneratePasswordUtil();
+			ValidatorUtil.validate(	inputData
+									, "userID"
+									, "serviceStatusCode"
+									, "password"
+									, "userLogin"
+									, "subUserYN" 
+									, "userName" ); 
+			
+			GData userInfoParam = new GData();
+			userInfoParam.setString( "userID", inputData.getString("userID") );
+			/*=============================================================
+			 * 							 Step 1					 			
+			 * 						Validate user status					
+			 *=============================================================*/
+			if ( !ServiceStatusCodeType.NORMAL.getValue().equals( inputData.getString("serviceStatusCode") ) ) {
+				throw new Exception( ResponseResultTypeCode.USER_REGISTER_STATUS_NOT_NORMAL.getDescription() ); // 01 : Normal 00 Block 02: remove
+			}
+			/*=============================================================
+			 * 							 Step 2					 			
+			 * 						validate userID							
+			 *=============================================================*/
+			GData userInfo = userDAO.retrieveUserInfoByUserID( userInfoParam );
+			if ( !userInfo.isEmpty() ) {
+				throw new Exception( ResponseResultTypeCode.USER_ID_ALREADY_EXISTING.getDescription() ); 
+			} else {
+				
+				userInfoParam.setString("userID",            inputData.getString("userID") );
+				userInfoParam.setString("serviceStatusCode", inputData.getString("serviceStatusCode") );
+				
+				userInfoParam.setString("profile", 		 	 inputData.getString("profile") );
+				userInfoParam.setString("createID", 		 inputData.getString("userLogin") );
+				userInfoParam.setString("updateID", 		 inputData.getString("userLogin") );
+				userInfoParam.setString("subUserYN", 		 inputData.getString("subUserYN") );
+				userInfoParam.setString("masterUserID", 	 inputData.getString("userLogin") );
+				
+				String password = inputData.getString("password");
+				String securityKey = inputData.getString( "userID" );
+				String passwordSH521 = generatePasswordUtil.generatePassword( password, securityKey);
+				
+				userInfoParam.setString("password", 	passwordSH521 );
+				
+				/*=============================================================
+				 * 							 Step 2					 			
+				 * 					Validate login User ID 						
+				 *=============================================================*/
+				GData userLoginInfoParam = new GData();
+				GData userLoginInfo      = new GData();
+				
+				userLoginInfoParam.setString("userID", inputData.getString("userLogin") );
+				userLoginInfo = userDAO.retrieveUserInfoByUserID( userLoginInfoParam );
+				if ( userLoginInfo ==  null ) {
+					throw new Exception( ResponseResultTypeCode.USER_LOGIN_NOT_FOUND.getDescription() );
+				} 
+				
+				/*
+				 * if ( !"N".equals( userLoginInfo.getString( "subUserYN" ) ) ) { throw new
+				 * Exception( ResponseResultTypeCode.USER_ID_IS_NOT_MASTER_USER.getDescription()
+				 * ); }
+				 */
+				
+				/*=============================================================
+				 * 							 Step 2					 			
+				 * 					Register user info							
+				 *=============================================================*/
+				userDAO.registerUserInfo( userInfoParam );
+				
+				
+				txManager.commit( transaction );
+			}
+			
+			
+		} catch ( Exception e ) {
+			txManager.rollback( transaction );
+			throw e;
+		}
+		
+		return null;
 	}
 
 }

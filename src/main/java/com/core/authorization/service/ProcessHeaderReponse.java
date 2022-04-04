@@ -5,8 +5,10 @@ package com.core.authorization.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.core.authorization.repository.UserDAO;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.type.YnTypeCode;
 import com.core.authorization.util.ResponseHeader;
@@ -22,6 +24,9 @@ import jara.util.GDateUtil;
 public class ProcessHeaderReponse {
 	
 	private Logger logger = LoggerFactory.getLogger( ProcessHeaderReponse.class);
+	
+	@Autowired
+	private UserDAO userDAO;
 	
 	public ResponseHeader processResponseHeader( GData preOutputData ) throws Exception {
 		
@@ -39,12 +44,13 @@ public class ProcessHeaderReponse {
 			}
 		}
 		
-		/*===========================================
-		 * Last Login User Information :MERCHANT.USERS
-		 *==========================================*/
+		/*=============================================
+		 * 		Update Last Login User Information 
+		 *=============================================*/
 		GData userInfoForUpdate = preOutputData.getGData( "userInfo" );
 		userInfoForUpdate.setString( "lastLoginDate", GDateUtil.getCurrentDate( GDateUtil.FORMAT_DATE) );
 		userInfoForUpdate.setString( "lastLoginTime", GDateUtil.getCurrentTime() );
+		userDAO.updateUserInfo( userInfoForUpdate );
 		
 		/*==========================================
 		 * 			Prepare Header Ouput			
