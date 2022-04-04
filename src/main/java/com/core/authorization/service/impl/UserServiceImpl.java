@@ -11,6 +11,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
 import com.core.authorization.repository.UserDAO;
+import com.core.authorization.service.OauthUserService;
 import com.core.authorization.service.UserService;
 import com.core.authorization.type.PasswordErrorCount;
 import com.core.authorization.type.ResponseResultTypeCode;
@@ -19,7 +20,6 @@ import com.core.authorization.type.YnTypeCode;
 import com.core.authorization.util.GeneratePasswordUtil;
 import com.core.authorization.util.ValidatorUtil;
 
-
 import jara.platform.collection.GData;
 import jara.util.GDateUtil;
 
@@ -27,11 +27,14 @@ import jara.util.GDateUtil;
 public class UserServiceImpl implements UserService {
 	
 	private Logger logger = LoggerFactory.getLogger( UserServiceImpl.class );
+	private GeneratePasswordUtil generatePasswordUtil;
+
 	@Autowired
 	PlatformTransactionManager txManager;
 	@Autowired
 	private UserDAO userDAO;
-	private GeneratePasswordUtil generatePasswordUtil;
+	@Autowired
+	private OauthUserService	oauthUserService;
 	
 	@Override
 	public GData userLogin(GData inputData) throws Exception {
@@ -185,22 +188,16 @@ public class UserServiceImpl implements UserService {
 					throw new Exception( ResponseResultTypeCode.USER_LOGIN_NOT_FOUND.getDescription() );
 				} 
 				
-				/*
-				 * if ( !"N".equals( userLoginInfo.getString( "subUserYN" ) ) ) { throw new
-				 * Exception( ResponseResultTypeCode.USER_ID_IS_NOT_MASTER_USER.getDescription()
-				 * ); }
-				 */
-				
 				/*=============================================================
 				 * 							 Step 2					 			
 				 * 					Register user info							
 				 *=============================================================*/
 				userDAO.registerUserInfo( userInfoParam );
 				
-				
+				oauthUserService.registerOauthUser( inputData );
+				logger.info( "Register user information successfully." ); 
 				txManager.commit( transaction );
 			}
-			
 			
 		} catch ( Exception e ) {
 			txManager.rollback( transaction );

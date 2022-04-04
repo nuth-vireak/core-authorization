@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.core.authorization.constant.ControllerName;
+import com.core.authorization.service.OauthUserService;
 import com.core.authorization.service.PreValidationData;
 import com.core.authorization.service.ProcessHeaderReponse;
 import com.core.authorization.service.UserService;
@@ -19,6 +20,14 @@ import com.core.authorization.util.ResponseHeader;
 
 import jara.platform.collection.GData;
 
+/**
+* <PRE>
+*  -- detail description --
+* </PRE>
+*
+* @logicalName UserController
+* @version   0.1, 2022-04-04
+*/
 @RestController
 @RequestMapping("/USER")
 @PreAuthorize("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
@@ -32,7 +41,20 @@ public class UserController {
 	private ProcessHeaderReponse processHeaderReponse;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private OauthUserService oauthUserService;
 	
+	/**
+	 * -- detail description --
+	 *
+	 * @serviceID 
+	 * @logicalName 
+	 * @param inputData
+	 * @return
+	 * @throws Exception
+	 * @exception 
+	 * @fullPath 
+	 */
 	@PostMapping( value = ControllerName.RETRIEVE_USER_LOGIN )
 	public ResponseData<GData> retrieveUserLogin( @RequestBody RequestData<GData> inputData  ) throws Exception {
 		
@@ -67,6 +89,17 @@ public class UserController {
 	
 	
 	
+	/**
+	 * -- detail description --
+	 *
+	 * @serviceID 
+	 * @logicalName 
+	 * @param inputData
+	 * @return
+	 * @throws Exception
+	 * @exception 
+	 * @fullPath 
+	 */
 	@PostMapping( value = ControllerName.REGISTER_USER_INFO )
 	public ResponseData<GData> registerUserInfo( @RequestBody RequestData<GData> inputData ) throws Exception {
 		
@@ -79,7 +112,16 @@ public class UserController {
 			  * 				Pre Validation				
 			  *============================================*/
 			 preOutputData = preValidationData.validateData( inputData );
+			 GData userInfoParam = new GData();
+			 userInfoParam.setString("userID",            inputData.getBody().getString("userID") );
+			 userInfoParam.setString("serviceStatusCode", inputData.getBody().getString("serviceStatusCode") );
+			 userInfoParam.setString("profile", 		  inputData.getBody().getString("profile") );
+			 userInfoParam.setString("userLogin", 		  inputData.getBody().getString("userLogin") );
+			 userInfoParam.setString("subUserYN", 		  inputData.getBody().getString("subUserYN") );
+			 userInfoParam.setString("password", 		  inputData.getBody().getString("password") );
+			 userInfoParam.setString("userName", 		  inputData.getBody().getString("userName") );
 			 
+			 oauthUserService.registerOauthUser( userInfoParam );
 			 
 		} catch ( Exception e ) {
 			preOutputData.setString( "errorCode", e.getMessage() );
@@ -90,7 +132,7 @@ public class UserController {
 		  * 			Process Response Data				
 		  *============================================*/
 		reponseHeader = processHeaderReponse.processResponseHeader( preOutputData );
-		return null;
+		return new ResponseData< GData >( reponseHeader );
 	}
 
 }

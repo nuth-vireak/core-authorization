@@ -2,6 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.core.authorization.repository.UserDAO">
 
+
+	<insert id="registerUserInfo">
+	 <![CDATA[
+			INSERT INTO  MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - registerUserInfo */
+			(
+							user_id  			/* UserID */
+						  , servicestatuscode   /* ServiceStatusCode */
+						  , password     		/* password */
+						  , profile  			/* profile */
+						  , creationid  		/* creationID */
+						  , creationdatetime 	/* creationDatetime */
+						  , updateid 			/* updateUserID */
+						  , updatedatetime  	/* updateDateTime */
+						  , subidyn 			/* subIDYN */
+						  ,	masteruserid  		/* masterUserID */
+			) VALUES (
+				           #{userID}
+				         , #{serviceStatusCode}   -- 01: Normal 00: Block 02: remove
+				         , #{password}
+				         , COALESCE( #{profile}, '' )
+				         , #{createID}
+				         , CURRENT_TIMESTAMP
+				         , #{updateID}
+				         , CURRENT_TIMESTAMP
+				         , #{subUserYN}
+				         , #{masterUserID}
+				 )
+		]]>
+	</insert>
+
 	<select id="getUserbyId" resultType="GData">
 	<![CDATA[
 		SELECT 
@@ -34,8 +64,8 @@
 			FROM MERCHANT.USERS WHERE USER_ID = #{userID}
 	]]>
 	</select>
-	
-	<update id="updateUserLoginSuccess" >
+
+	<update id="updateUserLoginSuccess">
 	  <![CDATA[
 	   UPDATE MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - updateUserLoginSuccess */
 			 SET  SERVICESTATUSCODE 	 =  #{serviceStatusCode}
@@ -47,8 +77,8 @@
 		WHERE USER_ID = #{userID}
 	  ]]>
 	</update>
-	
-	<update id="updateUserInfo" >
+
+	<update id="updateUserInfo">
 	  <![CDATA[
 	   UPDATE MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - updateUserInfo */
 			 SET  SERVICESTATUSCODE 	 =  #{serviceStatusCode}

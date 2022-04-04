@@ -25,6 +25,7 @@ public enum ResponseResultTypeCode {
 	PASSWORD_NOT_CORRECT ( "2013", "Password not correct"),
 	USER_ID_IS_LOCKED ( "2014", "User ID is locked"),
 	USER_ID_IS_REMOVED ( "2015", "User ID is removed"),
+	USER_OAUTH_CANNOT_REGISTER( "2016", "There are problem while register oauth user "),
 	
 	// General Message Start with 3001
 	GENERAL_MESSAGE( "3001", "General System Error" ),

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.core.authorization.repository.UserDAO">
+
+	<insert id="registerOauthUserInfo">
+  	<![CDATA[  
+	  	INSERT INTO OAUTH_CLIENT_DETAILS 
+				( 
+						CLIENT_ID
+					,	CLIENT_SECRET
+					,	scope
+					,	AUTHORIZED_GRANT_TYPES
+					,	authorities
+					,	ACCESS_TOKEN_VALIDITY
+					,	REFRESH_TOKEN_VALIDITY  
+				) VALUES (
+						#{client_id}
+					,	#{client_secret}
+					,	'read,write'
+					,	'password,refresh_token,client_credentials,authorization_code'
+					,	'ROLE_TRUSTED_CLIENT'
+					,	360
+					,	360
+				)
+  	]]>
+	</insert>
+
+</mapper>
