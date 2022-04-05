@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.core.authorization.constant.ControllerName;
 import com.core.authorization.repository.UserDAO;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.util.RequestData;
+import com.core.authorization.util.ResponseUtil;
 
 import jara.platform.collection.GData;
 
@@ -20,6 +22,14 @@ public class PreValidationData  {
 	private Logger logger = LoggerFactory.getLogger( PreValidationData.class );
 	
 	public GData validateData( RequestData<GData>  inputData ) throws Exception {
+		
+		/*=================================
+		 * 	  Validate Controller Name
+		 *=================================*/
+		GData controllerName = ResponseUtil.getControllerName();
+		if ( controllerName.isEmpty() || controllerName == null ) {
+			throw new Exception( ResponseResultTypeCode.MISSING_CONTROLLER_NAME.getValue() );
+		}
 		
 		logger.debug( ">>>>>>>>>> Pre Validation Data Start >>>>>>>>>>: " + inputData );
 		/*=================================
@@ -35,13 +45,16 @@ public class PreValidationData  {
 		if ( StringUtils.isBlank( userID ) ) {
 			throw new Exception(  ResponseResultTypeCode.USERID_IS_REQUIRED.getValue() );
 		}
+		
 		GData userParam = new GData();
 		GData userInfo	= new GData();
 		userParam.setString( "userID", userID );
 		
-		userInfo  = userDAO.retrieveUserInfoByUserID( userParam );
-		if ( userInfo == null ) {
-			throw new Exception( ResponseResultTypeCode.USER_NOT_FOUND.getValue() );
+		if ( !ControllerName.REGISTER_USER_INFO.equals( controllerName.getString("controllerName") ) ) {
+			userInfo  = userDAO.retrieveUserInfoByUserID( userParam );
+			if ( userInfo == null ) {
+				throw new Exception( ResponseResultTypeCode.USER_NOT_FOUND.getValue() );
+			}
 		}
 		
 		GData outputData = new GData();

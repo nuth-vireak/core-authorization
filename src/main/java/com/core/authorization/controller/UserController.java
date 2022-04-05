@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.core.authorization.constant.ControllerName;
-import com.core.authorization.service.OauthUserService;
 import com.core.authorization.service.PreValidationData;
 import com.core.authorization.service.ProcessHeaderReponse;
 import com.core.authorization.service.UserService;
 import com.core.authorization.util.RequestData;
 import com.core.authorization.util.ResponseData;
 import com.core.authorization.util.ResponseHeader;
+import com.core.authorization.util.ResponseUtil;
 
 import jara.platform.collection.GData;
 
@@ -33,7 +33,7 @@ import jara.platform.collection.GData;
 @PreAuthorize("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
 public class UserController {
 	
-	private Logger logger = LoggerFactory.getLogger(UserController.class);
+	private Logger logger = LoggerFactory.getLogger( UserController.class );
 	
 	@Autowired
 	private PreValidationData preValidationData;
@@ -41,8 +41,6 @@ public class UserController {
 	private ProcessHeaderReponse processHeaderReponse;
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private OauthUserService oauthUserService;
 	
 	/**
 	 * -- detail description --
@@ -57,6 +55,13 @@ public class UserController {
 	 */
 	@PostMapping( value = ControllerName.RETRIEVE_USER_LOGIN )
 	public ResponseData<GData> retrieveUserLogin( @RequestBody RequestData<GData> inputData  ) throws Exception {
+		
+		/*=============================================
+		  * 		Set Controller Context				
+		  *============================================*/
+		GData controllerName = new GData();
+		controllerName.setString( "controllerName", ControllerName.RETRIEVE_USER_LOGIN);
+		ResponseUtil.setControllerName( controllerName );
 		
 		logger.info( ">>>>>>>>>> USER1011 Start >>>>>>>>>>" );
 		GData userInfo 			= new GData();
@@ -103,6 +108,13 @@ public class UserController {
 	@PostMapping( value = ControllerName.REGISTER_USER_INFO )
 	public ResponseData<GData> registerUserInfo( @RequestBody RequestData<GData> inputData ) throws Exception {
 		
+		/*=============================================
+		  * 		Set Controller Context				
+		  *============================================*/
+		GData controllerName = new GData();
+		controllerName.setString( "controllerName", ControllerName.REGISTER_USER_INFO);
+		ResponseUtil.setControllerName( controllerName );
+		
 		logger.info( ">>>>>>>>>> USER1021 Start >>>>>>>>>>" );
 		GData preOutputData 	= new GData();
 		ResponseHeader	reponseHeader = new ResponseHeader();
@@ -121,7 +133,7 @@ public class UserController {
 			 userInfoParam.setString("password", 		  inputData.getBody().getString("password") );
 			 userInfoParam.setString("userName", 		  inputData.getBody().getString("userName") );
 			 
-			 oauthUserService.registerOauthUser( userInfoParam );
+			 userService.registerUserInfo( userInfoParam );
 			 
 		} catch ( Exception e ) {
 			preOutputData.setString( "errorCode", e.getMessage() );

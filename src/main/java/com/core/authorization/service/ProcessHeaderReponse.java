@@ -8,10 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.core.authorization.constant.ControllerName;
 import com.core.authorization.repository.UserDAO;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.type.YnTypeCode;
 import com.core.authorization.util.ResponseHeader;
+import com.core.authorization.util.ResponseUtil;
 
 import jara.platform.collection.GData;
 import jara.util.GDateUtil;
@@ -44,13 +46,19 @@ public class ProcessHeaderReponse {
 			}
 		}
 		
-		/*=============================================
-		 * 		Update Last Login User Information 
-		 *=============================================*/
-		GData userInfoForUpdate = preOutputData.getGData( "userInfo" );
-		userInfoForUpdate.setString( "lastLoginDate", GDateUtil.getCurrentDate( GDateUtil.FORMAT_DATE) );
-		userInfoForUpdate.setString( "lastLoginTime", GDateUtil.getCurrentTime() );
-		userDAO.updateUserInfo( userInfoForUpdate );
+		/*=================================
+		 * 	  Validate Controller Name
+		 *=================================*/
+		GData controllerName = ResponseUtil.getControllerName();
+		if ( !ControllerName.REGISTER_USER_INFO.equals( controllerName.getString("controllerName") ) ) {
+			/*=============================================
+			 * 		Update Last Login User Information 
+			 *=============================================*/
+			GData userInfoForUpdate = preOutputData.getGData( "userInfo" );
+			userInfoForUpdate.setString( "lastLoginDate", GDateUtil.getCurrentDate( GDateUtil.FORMAT_DATE) );
+			userInfoForUpdate.setString( "lastLoginTime", GDateUtil.getCurrentTime() );
+			userDAO.updateUserInfo( userInfoForUpdate );
+		}
 		
 		/*==========================================
 		 * 			Prepare Header Ouput			
@@ -61,6 +69,10 @@ public class ProcessHeaderReponse {
 		}else {
 			header.setHeader( YnTypeCode.YES.getValue() , ResponseResultTypeCode.SUCCESS_MESSAGE.getValue(),  ResponseResultTypeCode.SUCCESS_MESSAGE.getDescription(), GDateUtil.getCurrentDate( GDateUtil.FORMAT_DATE) );
 		}
+		/*==========================================
+		 * 			Clear context 					
+		 *==========================================*/
+		ResponseUtil.clearControllerName();
 		return header;
 	}
 }

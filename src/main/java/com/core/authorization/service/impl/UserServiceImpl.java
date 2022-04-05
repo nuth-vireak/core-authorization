@@ -12,6 +12,7 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
 import com.core.authorization.repository.UserDAO;
 import com.core.authorization.service.OauthUserService;
+import com.core.authorization.service.UserDetailService;
 import com.core.authorization.service.UserService;
 import com.core.authorization.type.PasswordErrorCount;
 import com.core.authorization.type.ResponseResultTypeCode;
@@ -33,6 +34,8 @@ public class UserServiceImpl implements UserService {
 	PlatformTransactionManager txManager;
 	@Autowired
 	private UserDAO userDAO;
+	@Autowired
+	private UserDetailService	userDetailService;
 	@Autowired
 	private OauthUserService	oauthUserService;
 	
@@ -58,7 +61,7 @@ public class UserServiceImpl implements UserService {
 			String successYN	 =  YnTypeCode.NO.getValue();
 			boolean successLogin = true;
 			
-			if ( userInfo.isEmpty() ) {
+			if ( userInfo.isEmpty()  || userInfo == null ) {
 				throw new Exception( ResponseResultTypeCode.USER_NOT_FOUND.getValue() );
 			} else {
 				/*=============================================================
@@ -122,6 +125,7 @@ public class UserServiceImpl implements UserService {
 			}
 			return userInfo;
 		} catch ( Exception  e ) {
+			e.printStackTrace();
 			throw e;
 		}
 	
@@ -149,20 +153,19 @@ public class UserServiceImpl implements UserService {
 			 * 						Validate user status					
 			 *=============================================================*/
 			if ( !ServiceStatusCodeType.NORMAL.getValue().equals( inputData.getString("serviceStatusCode") ) ) {
-				throw new Exception( ResponseResultTypeCode.USER_REGISTER_STATUS_NOT_NORMAL.getDescription() ); // 01 : Normal 00 Block 02: remove
+				throw new Exception( ResponseResultTypeCode.USER_REGISTER_STATUS_NOT_NORMAL.getValue() ); // 01 : Normal 00 Block 02: remove
 			}
 			/*=============================================================
 			 * 							 Step 2					 			
 			 * 						validate userID							
 			 *=============================================================*/
 			GData userInfo = userDAO.retrieveUserInfoByUserID( userInfoParam );
-			if ( !userInfo.isEmpty() ) {
-				throw new Exception( ResponseResultTypeCode.USER_ID_ALREADY_EXISTING.getDescription() ); 
+			if (  userInfo != null ) {
+				throw new Exception( ResponseResultTypeCode.USER_ID_ALREADY_EXISTING.getValue() ); 
 			} else {
 				
-				userInfoParam.setString("userID",            inputData.getString("userID") );
+				userInfoParam.setString("userID",			 inputData.getString("userID") );
 				userInfoParam.setString("serviceStatusCode", inputData.getString("serviceStatusCode") );
-				
 				userInfoParam.setString("profile", 		 	 inputData.getString("profile") );
 				userInfoParam.setString("createID", 		 inputData.getString("userLogin") );
 				userInfoParam.setString("updateID", 		 inputData.getString("userLogin") );
@@ -185,7 +188,7 @@ public class UserServiceImpl implements UserService {
 				userLoginInfoParam.setString("userID", inputData.getString("userLogin") );
 				userLoginInfo = userDAO.retrieveUserInfoByUserID( userLoginInfoParam );
 				if ( userLoginInfo ==  null ) {
-					throw new Exception( ResponseResultTypeCode.USER_LOGIN_NOT_FOUND.getDescription() );
+					throw new Exception( ResponseResultTypeCode.USER_LOGIN_NOT_FOUND.getValue() );
 				} 
 				
 				/*=============================================================
@@ -193,14 +196,24 @@ public class UserServiceImpl implements UserService {
 				 * 					Register user info							
 				 *=============================================================*/
 				userDAO.registerUserInfo( userInfoParam );
-				
+				/*=============================================================
+				 * 							 Step 3				 				
+				 * 					Register user Detail						
+				 *=============================================================*/
+				userDetailService.registerUserDetail( inputData );
+				/*=============================================================
+				 * 							 Step 4				 				
+				 * 					Register user Oauth							
+				 *=============================================================*/
 				oauthUserService.registerOauthUser( inputData );
 				logger.info( "Register user information successfully." ); 
+				
 				txManager.commit( transaction );
 			}
 			
 		} catch ( Exception e ) {
 			txManager.rollback( transaction );
+			e.printStackTrace();
 			throw e;
 		}
 		

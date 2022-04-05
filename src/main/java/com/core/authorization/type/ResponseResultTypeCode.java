@@ -26,10 +26,12 @@ public enum ResponseResultTypeCode {
 	USER_ID_IS_LOCKED ( "2014", "User ID is locked"),
 	USER_ID_IS_REMOVED ( "2015", "User ID is removed"),
 	USER_OAUTH_CANNOT_REGISTER( "2016", "There are problem while register oauth user "),
+	USER_DETAIL_CANNOT_REGISTER( "2017", "There are problem while register user detail "),
 	
 	// General Message Start with 3001
 	GENERAL_MESSAGE( "3001", "General System Error" ),
-	MISSING_REQUIRED_FIELD( "3002", "Missing required field" );
+	MISSING_REQUIRED_FIELD( "3002", "Missing required field" ),
+	MISSING_CONTROLLER_NAME( "3003", "Missing controller name" );
 	
 	private String value;
 	private String description;

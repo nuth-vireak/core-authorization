@@ -30,14 +30,14 @@ CREATE TABLE merchant.users (
 
 CREATE TABLE merchant.users_d (
 	user_id varchar(20) NOT NULL,
-	username varchar(80) NOT NULL,
-	phone varchar(20) NULL,
-	email varchar(100) NULL,
-	remark varchar(100) NULL,
-	creationid varchar(20) NOT NULL,
-	creationdatetime timestamp NOT NULL,
-	updateid varchar(20) NOT NULL,
-	updatedatetime timestamp NOT NULL
+	username varchar(80) NOT NULL DEFAULT ''::character varying,
+	phone varchar(20) NOT NULL DEFAULT ''::character varying,
+	email varchar(100) NOT NULL DEFAULT ''::character varying,
+	remark varchar(100) NOT NULL DEFAULT ''::character varying,
+	creationid varchar(20) NOT NULL DEFAULT ''::character varying,
+	creationdatetime timestamp NOT NULL ,
+	updateid varchar(20) NOT NULL DEFAULT ''::character varying,
+	updatedatetime timestamp NOT NULL 
 );
 
 
