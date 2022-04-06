@@ -1,4 +1,4 @@
-package com.core.authorization.controller;
+package com.core.authorization.mobile.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.core.authorization.constant.ControllerName;
-import com.core.authorization.service.PreValidationData;
-import com.core.authorization.service.ProcessHeaderReponse;
-import com.core.authorization.service.UserService;
+import com.core.authorization.mobile.service.PreValidationData;
+import com.core.authorization.mobile.service.ProcessHeaderReponse;
+import com.core.authorization.mobile.service.MobileUserService;
 import com.core.authorization.util.RequestData;
 import com.core.authorization.util.ResponseData;
 import com.core.authorization.util.ResponseHeader;
@@ -31,16 +31,16 @@ import jara.platform.collection.GData;
 @RestController
 @RequestMapping("/USER")
 @PreAuthorize("#oauth2.hasScope('read') or #oauth2.hasScope('write')")
-public class UserController {
+public class MobileUserController {
 	
-	private Logger logger = LoggerFactory.getLogger( UserController.class );
+	private Logger logger = LoggerFactory.getLogger( MobileUserController.class );
 	
 	@Autowired
 	private PreValidationData preValidationData;
 	@Autowired
 	private ProcessHeaderReponse processHeaderReponse;
 	@Autowired
-	private UserService userService;
+	private MobileUserService mobileUserService;
 	
 	/**
 	 * -- detail description --
@@ -53,14 +53,14 @@ public class UserController {
 	 * @exception 
 	 * @fullPath 
 	 */
-	@PostMapping( value = ControllerName.RETRIEVE_USER_LOGIN )
+	@PostMapping( value = ControllerName.MOBILE_RETRIEVE_USER_LOGIN )
 	public ResponseData<GData> retrieveUserLogin( @RequestBody RequestData<GData> inputData  ) throws Exception {
 		
 		/*=============================================
 		  * 		Set Controller Context				
 		  *============================================*/
 		GData controllerName = new GData();
-		controllerName.setString( "controllerName", ControllerName.RETRIEVE_USER_LOGIN);
+		controllerName.setString( "controllerName", ControllerName.MOBILE_RETRIEVE_USER_LOGIN);
 		ResponseUtil.setControllerName( controllerName );
 		
 		logger.info( ">>>>>>>>>> USER1011 Start >>>>>>>>>>" );
@@ -79,9 +79,10 @@ public class UserController {
 			  *============================================*/
 			 userParam.setString("userID", inputData.getBody().getString("userID") );
 			 userParam.setString("password", inputData.getBody().getString("password") );
-			 userInfo = userService.userLogin( userParam );
+			 userInfo = mobileUserService.userLogin( userParam );
 			 
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			preOutputData.setString( "errorCode", e.getMessage() );
 		}
 		/*============================================
@@ -105,14 +106,14 @@ public class UserController {
 	 * @exception 
 	 * @fullPath 
 	 */
-	@PostMapping( value = ControllerName.REGISTER_USER_INFO )
+	@PostMapping( value = ControllerName.MOBILE_REGISTER_USER_INFO )
 	public ResponseData<GData> registerUserInfo( @RequestBody RequestData<GData> inputData ) throws Exception {
 		
 		/*=============================================
 		  * 		Set Controller Context				
 		  *============================================*/
 		GData controllerName = new GData();
-		controllerName.setString( "controllerName", ControllerName.REGISTER_USER_INFO);
+		controllerName.setString( "controllerName", ControllerName.MOBILE_REGISTER_USER_INFO);
 		ResponseUtil.setControllerName( controllerName );
 		
 		logger.info( ">>>>>>>>>> USER1021 Start >>>>>>>>>>" );
@@ -133,7 +134,7 @@ public class UserController {
 			 userInfoParam.setString("password", 		  inputData.getBody().getString("password") );
 			 userInfoParam.setString("userName", 		  inputData.getBody().getString("userName") );
 			 
-			 userService.registerUserInfo( userInfoParam );
+			 mobileUserService.registerUserInfo( userInfoParam );
 			 
 		} catch ( Exception e ) {
 			preOutputData.setString( "errorCode", e.getMessage() );

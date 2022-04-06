@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.core.authorization.repository.UserDAO">
+<mapper namespace="com.core.authorization.mobile.repository.MobileUserDAO">
 
 
 	<insert id="registerUserInfo">
 	 <![CDATA[
-			INSERT INTO  MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - registerUserInfo */
+			INSERT INTO  MERCHANT.USERS  
 			(
 							user_id  			/* UserID */
 						  , servicestatuscode   /* ServiceStatusCode */
@@ -67,26 +67,22 @@
 
 	<update id="updateUserLoginSuccess">
 	  <![CDATA[
-	   UPDATE MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - updateUserLoginSuccess */
-			 SET  SERVICESTATUSCODE 	 =  #{serviceStatusCode}
-			 	, LASTLOGINDATE 		 = 	#{lastloginDate}
-			 	, LASTLOGINHMS 			 = 	#{lastloginTime}
-			 	, USERPASSWORDERRORCOUNT = 	#{userPasswordErrorCount}
-			 	, PASSWORDCHANGEDATE 	 =  COALESCE(#{passwordChangeDate}, '' )
-			 	, SERVICECEASEDATE 		 = 	COALESCE(#{serviceCaseDate}, '' )
-		WHERE USER_ID = #{userID}
+	   UPDATE MERCHANT.USERS  
+			 SET  servicestatuscode 	 =  #{serviceStatusCode}
+			 	, lastlogindate 		 = 	#{lastloginDate}
+			 	, lastloginhms 			 = 	#{lastloginTime}
+			 	, userpassworderrorcount = 	#{userPasswordErrorCount}
+			 	, passwordchangedate 	 =  COALESCE(#{passwordChangeDate}, '' )
+			 	, serviceceasedate 		 = 	COALESCE(#{serviceCaseDate}, '' )
+		WHERE user_id = #{userID}
 	  ]]>
 	</update>
 
 	<update id="updateUserInfo">
 	  <![CDATA[
 	   UPDATE MERCHANT.USERS  /* FUTOR /Mapper/UserDAO.xml - updateUserInfo */
-			 SET  SERVICESTATUSCODE 	 =  #{serviceStatusCode}
-			 	, LASTLOGINDATE 		 = 	#{lastloginDate}
+			 SET   LASTLOGINDATE 		 = 	#{lastloginDate}
 			 	, LASTLOGINHMS 			 = 	#{lastloginTime}
-			 	, USERPASSWORDERRORCOUNT = 	#{userPasswordErrorCount}
-			 	, PASSWORDCHANGEDATE 	 =  COALESCE(#{passwordChangeDate}, '' )
-			 	, SERVICECEASEDATE 		 = 	COALESCE(#{serviceCaseDate}, '' )
 		WHERE USER_ID = #{userID}
 	  ]]>
 	</update>

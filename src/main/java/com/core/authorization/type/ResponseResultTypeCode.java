@@ -31,7 +31,8 @@ public enum ResponseResultTypeCode {
 	// General Message Start with 3001
 	GENERAL_MESSAGE( "3001", "General System Error" ),
 	MISSING_REQUIRED_FIELD( "3002", "Missing required field" ),
-	MISSING_CONTROLLER_NAME( "3003", "Missing controller name" );
+	MISSING_CONTROLLER_NAME( "3003", "Missing controller name" ),
+	CONTEXT_DATA_IS_EMPTY( "3004", "Context data is empty" );
 	
 	private String value;
 	private String description;

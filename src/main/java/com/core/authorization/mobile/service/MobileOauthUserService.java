@@ -1,8 +1,8 @@
-package com.core.authorization.service;
+package com.core.authorization.mobile.service;
 
 import jara.platform.collection.GData;
 
-public interface OauthUserService {
+public interface MobileOauthUserService {
 	
 	int registerOauthUser( GData inputData ) throws Exception;
 

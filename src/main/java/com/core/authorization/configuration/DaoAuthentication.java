@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.core.authorization.repository.UserDAO;
+import com.core.authorization.mobile.repository.MobileUserDAO;
 
 import jara.platform.collection.GData;
 
@@ -23,7 +23,7 @@ public class DaoAuthentication implements AuthenticationProvider {
 	private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 	
 	@Autowired
-	private UserDAO userDAO;
+	private MobileUserDAO mobileUserDAO;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -42,7 +42,7 @@ public class DaoAuthentication implements AuthenticationProvider {
 			
 			params.setString("userName", name);
 
-			findUserById = userDAO.getUserbyId(params);
+			findUserById = mobileUserDAO.getUserbyId(params);
 			
 		} catch (Exception e) {
 			throw new BadCredentialsException(e.getMessage());

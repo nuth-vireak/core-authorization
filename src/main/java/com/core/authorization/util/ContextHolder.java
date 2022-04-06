@@ -1,5 +1,7 @@
 package com.core.authorization.util;
 
+import com.core.authorization.type.ResponseResultTypeCode;
+
 import jara.platform.collection.GData;
 
 public class ContextHolder  {
@@ -25,7 +27,7 @@ public class ContextHolder  {
 
 	public static void setContext( String contextKey, Object context ) throws Exception {
 		if ( contextThreadLocal == null ) {
-			throw new Exception();
+			throw new Exception( ResponseResultTypeCode.CONTEXT_DATA_IS_EMPTY.getValue() );
 		}
 		contextThreadLocal.getMData().set( contextKey, context );
 	}

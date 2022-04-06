@@ -1,11 +1,11 @@
-package com.core.authorization.repository;
+package com.core.authorization.mobile.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import jara.platform.collection.GData;
 
 @Mapper
-public interface UserDAO {
+public interface MobileUserDAO {
 	
 	public GData getUserbyId ( GData data );
 	

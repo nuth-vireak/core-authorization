@@ -1,24 +1,24 @@
-package com.core.authorization.service.impl;
+package com.core.authorization.mobile.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.core.authorization.repository.UserDetailDAO;
-import com.core.authorization.service.UserDetailService;
+import com.core.authorization.mobile.repository.MobileUserDetailDAO;
+import com.core.authorization.mobile.service.MobileUserDetailService;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.util.ValidatorUtil;
 
 import jara.platform.collection.GData;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailService{
+public class MobileUserDetailServiceImpl implements MobileUserDetailService{
 
-	private Logger logger = LoggerFactory.getLogger( UserDetailServiceImpl.class );
+	private Logger logger = LoggerFactory.getLogger( MobileUserDetailServiceImpl.class );
 	
 	@Autowired
-	private UserDetailDAO	userDetailDAO;
+	private MobileUserDetailDAO		mobileUserDetailDAO;
 	
 	
 	@Override
@@ -37,7 +37,7 @@ public class UserDetailServiceImpl implements UserDetailService{
 			userDetailInfo.setString( "createID"		, inputData.getString("userLogin") );
 			userDetailInfo.setString( "updateID"		, inputData.getString("userLogin") );
 			
-			userDetailDAO.registerUserDetail( userDetailInfo );
+			mobileUserDetailDAO.registerUserDetail( userDetailInfo );
 			
 		} catch ( Exception e ) {
 			logger.error( e.getMessage() );

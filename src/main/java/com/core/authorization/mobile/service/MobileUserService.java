@@ -1,8 +1,8 @@
-package com.core.authorization.service;
+package com.core.authorization.mobile.service;
 
 import jara.platform.collection.GData;
 
-public interface UserService {
+public interface MobileUserService {
 
 	public GData userLogin( GData inputData ) throws Exception;
 	

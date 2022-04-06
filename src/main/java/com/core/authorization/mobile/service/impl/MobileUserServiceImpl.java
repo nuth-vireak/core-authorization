@@ -1,4 +1,4 @@
-package com.core.authorization.service.impl;
+package com.core.authorization.mobile.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -10,10 +10,10 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
-import com.core.authorization.repository.UserDAO;
-import com.core.authorization.service.OauthUserService;
-import com.core.authorization.service.UserDetailService;
-import com.core.authorization.service.UserService;
+import com.core.authorization.mobile.repository.MobileUserDAO;
+import com.core.authorization.mobile.service.MobileOauthUserService;
+import com.core.authorization.mobile.service.MobileUserDetailService;
+import com.core.authorization.mobile.service.MobileUserService;
 import com.core.authorization.type.PasswordErrorCount;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.type.ServiceStatusCodeType;
@@ -25,19 +25,19 @@ import jara.platform.collection.GData;
 import jara.util.GDateUtil;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class MobileUserServiceImpl implements MobileUserService {
 	
-	private Logger logger = LoggerFactory.getLogger( UserServiceImpl.class );
+	private Logger logger = LoggerFactory.getLogger( MobileUserServiceImpl.class );
 	private GeneratePasswordUtil generatePasswordUtil;
 
 	@Autowired
 	PlatformTransactionManager txManager;
 	@Autowired
-	private UserDAO userDAO;
+	private MobileUserDAO 	mobileUserDAO;
 	@Autowired
-	private UserDetailService	userDetailService;
+	private MobileUserDetailService	mobileUserDetailService;
 	@Autowired
-	private OauthUserService	oauthUserService;
+	private MobileOauthUserService	mobileOauthUserService;
 	
 	@Override
 	public GData userLogin(GData inputData) throws Exception {
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 			 *=============================================================*/
 			GData userInfoParam = new GData();
 			userInfoParam.setString("userID", inputData.getString("userID") );
-			GData userInfo = userDAO.retrieveUserInfoByUserID(userInfoParam);
+			GData userInfo = mobileUserDAO.retrieveUserInfoByUserID(userInfoParam);
 			
 			String password      = StringUtils.EMPTY;
 			String passwordSH512 = StringUtils.EMPTY;
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 						userInfo.setString( "lastloginTime", 		GDateUtil.getCurrentTime() );
 						userInfo.setString( "updateID", 			userInfo.getString( "userID") );
 						
-						userDAO.updateUserLoginSuccess( userInfo );
+						mobileUserDAO.updateUserLoginSuccess( userInfo );
 						if ( YnTypeCode.YES.getValue().equals( userInfo.getString( "subUserYN" ) ) ) {
 							throw new Exception( ResponseResultTypeCode.SUB_USER_REAH_PASSWORD_ERROR_COUNT.getValue() );
 						} else {
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
 				userInfo.setString( "lastloginTime",   GDateUtil.getCurrentTime() );
 				userInfo.setString( "serviceCaseDate", StringUtils.EMPTY );
 				
-				userDAO.updateUserLoginSuccess( userInfo );
+				mobileUserDAO.updateUserLoginSuccess( userInfo );
 				userInfo.setString( "successYN", successYN );
 			}
 			return userInfo;
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 			 * 							 Step 2					 			
 			 * 						validate userID							
 			 *=============================================================*/
-			GData userInfo = userDAO.retrieveUserInfoByUserID( userInfoParam );
+			GData userInfo = mobileUserDAO.retrieveUserInfoByUserID( userInfoParam );
 			if (  userInfo != null ) {
 				throw new Exception( ResponseResultTypeCode.USER_ID_ALREADY_EXISTING.getValue() ); 
 			} else {
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
 				GData userLoginInfo      = new GData();
 				
 				userLoginInfoParam.setString("userID", inputData.getString("userLogin") );
-				userLoginInfo = userDAO.retrieveUserInfoByUserID( userLoginInfoParam );
+				userLoginInfo = mobileUserDAO.retrieveUserInfoByUserID( userLoginInfoParam );
 				if ( userLoginInfo ==  null ) {
 					throw new Exception( ResponseResultTypeCode.USER_LOGIN_NOT_FOUND.getValue() );
 				} 
@@ -195,17 +195,17 @@ public class UserServiceImpl implements UserService {
 				 * 							 Step 2					 			
 				 * 					Register user info							
 				 *=============================================================*/
-				userDAO.registerUserInfo( userInfoParam );
+				mobileUserDAO.registerUserInfo( userInfoParam );
 				/*=============================================================
 				 * 							 Step 3				 				
 				 * 					Register user Detail						
 				 *=============================================================*/
-				userDetailService.registerUserDetail( inputData );
+				mobileUserDetailService.registerUserDetail( inputData );
 				/*=============================================================
 				 * 							 Step 4				 				
 				 * 					Register user Oauth							
 				 *=============================================================*/
-				oauthUserService.registerOauthUser( inputData );
+				mobileOauthUserService.registerOauthUser( inputData );
 				logger.info( "Register user information successfully." ); 
 				
 				txManager.commit( transaction );

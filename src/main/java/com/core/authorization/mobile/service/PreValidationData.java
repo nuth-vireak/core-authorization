@@ -1,4 +1,4 @@
-package com.core.authorization.service;
+package com.core.authorization.mobile.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.core.authorization.constant.ControllerName;
-import com.core.authorization.repository.UserDAO;
+import com.core.authorization.mobile.repository.MobileUserDAO;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.util.RequestData;
 import com.core.authorization.util.ResponseUtil;
@@ -18,7 +18,7 @@ import jara.platform.collection.GData;
 public class PreValidationData  {
 	
 	@Autowired
-	private UserDAO userDAO;
+	private MobileUserDAO 	mobileUserDAO;
 	private Logger logger = LoggerFactory.getLogger( PreValidationData.class );
 	
 	public GData validateData( RequestData<GData>  inputData ) throws Exception {
@@ -50,8 +50,8 @@ public class PreValidationData  {
 		GData userInfo	= new GData();
 		userParam.setString( "userID", userID );
 		
-		if ( !ControllerName.REGISTER_USER_INFO.equals( controllerName.getString("controllerName") ) ) {
-			userInfo  = userDAO.retrieveUserInfoByUserID( userParam );
+		if ( !ControllerName.MOBILE_REGISTER_USER_INFO.equals( controllerName.getString("controllerName") ) ) {
+			userInfo  = mobileUserDAO.retrieveUserInfoByUserID( userParam );
 			if ( userInfo == null ) {
 				throw new Exception( ResponseResultTypeCode.USER_NOT_FOUND.getValue() );
 			}
