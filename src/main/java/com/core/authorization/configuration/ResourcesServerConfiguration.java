@@ -28,7 +28,6 @@ public class ResourcesServerConfiguration  extends ResourceServerConfigurerAdapt
 
         TokenStore tokenStore=new JdbcTokenStore(ouathDataSource());
         resources.resourceId("user").tokenStore(tokenStore);
-
     }
     @Override
     public void configure(HttpSecurity http) throws Exception{
@@ -40,7 +39,8 @@ public class ResourcesServerConfiguration  extends ResourceServerConfigurerAdapt
             .antMatchers(HttpMethod.PATCH	,  	 "/**").access("#oauth2.hasScope('write')")
             .antMatchers(HttpMethod.PUT		,    "/**").access("#oauth2.hasScope('write')")
             .antMatchers(HttpMethod.DELETE	,	 "/**").access("#oauth2.hasScope('write')");
-          
+        
+        //http.exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint()) ;
         
             /*
             .headers().addHeaderWriter((request, response) -> {

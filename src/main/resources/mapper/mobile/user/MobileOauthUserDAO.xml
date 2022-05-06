@@ -24,5 +24,20 @@
 				)
   	]]>
 	</insert>
+	
+	<select id="retrieveOauthUserInfo" resultType="GData">
+	<![CDATA[
+		SELECT 
+						CLIENT_ID				as "client_id"
+					,	CLIENT_SECRET			as "client_secret"
+					,	scope					
+					,	AUTHORIZED_GRANT_TYPES
+					,	authorities
+					,	ACCESS_TOKEN_VALIDITY
+					,	REFRESH_TOKEN_VALIDITY 
+		FROM PUBLIC.OAUTH_CLIENT_DETAILS 
+			WHERE CLIENT_ID   = #{client_id}
+	]]>
+	</select>
 
 </mapper>

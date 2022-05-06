@@ -8,5 +8,7 @@ import jara.platform.collection.GData;
 public interface MobileOauthUserDAO {
 	
 	public long registerOauthUserInfo( GData param ) throws Exception;
+	
+	public GData retrieveOauthUserInfo( GData param ) throws Exception;
 
 }

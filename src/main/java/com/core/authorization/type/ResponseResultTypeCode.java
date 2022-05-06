@@ -32,7 +32,12 @@ public enum ResponseResultTypeCode {
 	GENERAL_MESSAGE( "3001", "General System Error" ),
 	MISSING_REQUIRED_FIELD( "3002", "Missing required field" ),
 	MISSING_CONTROLLER_NAME( "3003", "Missing controller name" ),
-	CONTEXT_DATA_IS_EMPTY( "3004", "Context data is empty" );
+	CONTEXT_DATA_IS_EMPTY( "3004", "Context data is empty" ),
+	
+	// OAUTH Message Start with 4001
+	INVALID_OAUTH_USER ( "4001", "Invalid client_id "),
+	INVALID_OAUTH_PASSWORD ( "4002", "Invalid  client_secret"),
+	INVALID_OAUTH_USER_OR_PASSWORD ( "4001", "Invalid client_id or client_secret");
 	
 	private String value;
 	private String description;
