@@ -21,7 +21,7 @@
 				           #{userID}
 				         , #{serviceStatusCode}   -- 01: Normal 00: Block 02: remove
 				         , #{password}
-				         , COALESCE( #{profile}, '' )
+				         , COALESCE(#{profile}    , ''::bytea )
 				         , #{createID}
 				         , CURRENT_TIMESTAMP
 				         , #{updateID}

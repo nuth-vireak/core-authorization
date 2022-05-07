@@ -133,10 +133,12 @@ public class MobileUserController {
 			 userInfoParam.setString("subUserYN", 		  inputData.getBody().getString("subUserYN") );
 			 userInfoParam.setString("password", 		  inputData.getBody().getString("password") );
 			 userInfoParam.setString("userName", 		  inputData.getBody().getString("userName") );
+			 userInfoParam.setString("userImage", 		  inputData.getBody().getString("userImage") );
 			 
 			 mobileUserService.registerUserInfo( userInfoParam );
 			 
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			preOutputData.setString( "errorCode", e.getMessage() );
 		}
 		
@@ -145,7 +147,7 @@ public class MobileUserController {
 		  * 			Process Response Data				
 		  *============================================*/
 		reponseHeader = processHeaderReponse.processResponseHeader( preOutputData );
-		return new ResponseData< GData >( reponseHeader );
+		return new ResponseData< GData >( reponseHeader, new GData() );
 	}
 
 }

@@ -19,6 +19,7 @@ import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.type.ServiceStatusCodeType;
 import com.core.authorization.type.YnTypeCode;
 import com.core.authorization.util.GeneratePasswordUtil;
+import com.core.authorization.util.ImageConversionUtil;
 import com.core.authorization.util.ValidatorUtil;
 
 import jara.platform.collection.GData;
@@ -64,6 +65,11 @@ public class MobileUserServiceImpl implements MobileUserService {
 			if ( userInfo.isEmpty()  || userInfo == null ) {
 				throw new Exception( ResponseResultTypeCode.USER_NOT_FOUND.getValue() );
 			} else {
+				// Convert user image
+				if ( StringUtils.isNotBlank( userInfo.getString("prfile"))) {
+					String userImage = ImageConversionUtil.byteToBase64( userInfo.get("prfile") );
+					userInfo.setString("prfile", userImage);
+				}
 				/*=============================================================
 				 * 								Step 2						 	
 				 * 							Check USer Status					
@@ -134,6 +140,9 @@ public class MobileUserServiceImpl implements MobileUserService {
 	@Override
 	public GData registerUserInfo( GData inputData ) throws Exception {
 		
+		/*=============================================================
+		 * Open new transaction in case error rollback transaction
+		 *=============================================================*/
 		TransactionStatus 	transaction 	= txManager.getTransaction(  new DefaultTransactionAttribute( TransactionDefinition.PROPAGATION_REQUIRES_NEW )  );
 		try {
 			
@@ -171,6 +180,13 @@ public class MobileUserServiceImpl implements MobileUserService {
 				userInfoParam.setString("updateID", 		 inputData.getString("userLogin") );
 				userInfoParam.setString("subUserYN", 		 inputData.getString("subUserYN") );
 				userInfoParam.setString("masterUserID", 	 inputData.getString("userLogin") );
+				byte[] userImage = null;
+				if ( StringUtils.isNotBlank( inputData.getString("userImage") ) ) {
+					userImage = ImageConversionUtil.Base64ToByte( inputData.getString("userImage"));
+					userInfoParam.set("profile", 	 userImage );
+				} else {
+					userInfoParam.set("profile", 	 null );
+				}
 				
 				String password = inputData.getString("password");
 				String securityKey = inputData.getString( "userID" );
@@ -207,11 +223,12 @@ public class MobileUserServiceImpl implements MobileUserService {
 				 *=============================================================*/
 				mobileOauthUserService.registerOauthUser( inputData );
 				logger.info( "Register user information successfully." ); 
-				
+				// commit transaction
 				txManager.commit( transaction );
 			}
 			
 		} catch ( Exception e ) {
+			// rollback transaction
 			txManager.rollback( transaction );
 			e.printStackTrace();
 			throw e;
