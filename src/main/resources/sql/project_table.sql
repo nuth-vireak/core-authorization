@@ -1,26 +1,28 @@
+
 -- Drop table
 
 -- DROP TABLE merchant.users;
 
 CREATE TABLE merchant.users (
-	user_id varchar(20) NOT NULL,
-	servicestatuscode varchar(2) NOT NULL,
-	lastlogindate varchar(8) NULL,
-	lastloginhms varchar(8) NULL,
-	firstlogindate varchar(8) NULL,
-	"password" varchar(256) NOT NULL,
+	user_id varchar(20) NOT NULL DEFAULT''::character varying,
+	servicestatuscode varchar(2) NOT NULL DEFAULT ''::character varying,
+	lastlogindate varchar(8) NULL DEFAULT ''::character varying,
+	lastloginhms varchar(8) NULL DEFAULT ''::character varying,
+	firstlogindate varchar(8) NULL DEFAULT ''::character varying,
+	"password" varchar(256) NOT NULL DEFAULT ''::character varying,
 	userpassworderrorcount numeric(2) NULL,
-	passwordchangedate varchar(8) NULL,
-	serviceceasedate varchar(8) NULL,
-	profile varchar(500) NULL,
-	creationid varchar(20) NOT NULL,
+	passwordchangedate varchar(8) NULL DEFAULT ''::character varying,
+	serviceceasedate varchar(8) NULL DEFAULT ''::character varying,
+	profile bytea NULL,
+	creationid varchar(20) NOT NULL DEFAULT ''::character varying,
 	creationdatetime timestamp NOT NULL,
-	updateid varchar(20) NOT NULL,
+	updateid varchar(20) NOT NULL DEFAULT ''::character varying,
 	updatedatetime timestamp NOT NULL,
-	subidyn varchar(1) NOT NULL,
-	masteruserid varchar(20) NOT NULL,
+	subidyn varchar(1) NOT NULL DEFAULT ''::character varying,
+	masteruserid varchar(20) NOT NULL DEFAULT ''::character varying,
 	CONSTRAINT pk_user PRIMARY KEY (user_id)
 );
+
 
 
 
