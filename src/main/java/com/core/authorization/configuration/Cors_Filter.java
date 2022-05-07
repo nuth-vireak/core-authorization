@@ -34,38 +34,44 @@ import jara.platform.collection.GData;
 public class Cors_Filter implements Filter {
 
 	
-	  @Autowired
-	  private MobileOauthUserDAO mobileOauthUserDAO;
+	@Autowired
+	private MobileOauthUserDAO mobileOauthUserDAO;
 	  
-	  private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+	private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 	 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 
-		final HttpServletResponse response = (HttpServletResponse) res;
-		final HttpServletRequest request = (HttpServletRequest) req;
-		 
-		 String erorrYN = YnTypeCode.NO.getValue(); 
-		 ResponseHeader header = new ResponseHeader(); 
-		 GData body = new GData(); 
-		 ResponseData<GData> responseData = new ResponseData(header,body);
+		/*==============================================================
+		 * 							NOTED
+		 * 				Every request are access this method
+		 *==============================================================*/
+		String erorrYN 		= YnTypeCode.NO.getValue(); 
+		GData body 			= new GData();
+		
+		final HttpServletResponse response 	= (HttpServletResponse) res;
+		final HttpServletRequest request 	= (HttpServletRequest) req;
+		ResponseHeader header 				= new ResponseHeader(); 
+		ResponseData<GData> responseData 	= new ResponseData(header,body);
+		ResponseResultTypeCode responseResultTypeCode = null;
 		
 		try {
 			
-			response.setHeader("Access-Control-Allow-Origin", "*");
-			response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
-			response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-			response.setHeader("Access-Control-Max-Age", "3600");
+			response.setHeader("Access-Control-Allow-Origin", 	"*");
+			response.setHeader("Access-Control-Allow-Methods", 	"POST, PUT, GET, OPTIONS, DELETE");
+			response.setHeader("Access-Control-Allow-Headers", 	"Authorization, Content-Type");
+			response.setHeader("Access-Control-Max-Age", 		"3600");
 			
 			String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-			String URL = request.getRequestURI();
-			String URLName = StringUtils.substring(URL, URL.length() - 12, URL.length());
+			String URL		= request.getRequestURI();
+			String URLName  = StringUtils.substring(URL, URL.length() - 12, URL.length());
 			
-			/*====================================
-			 * 		  Request token validation
-			 *====================================*/
+			/*==============================================================
+			 * 								STEP 1
+			 * 		 				 Request token validation
+			 *==============================================================*/
 			if ("/oauth/token".equals(URLName)) {
 
 				String userDetail = StringUtils.substring(requestTokenHeader, 6, requestTokenHeader.length());
@@ -84,45 +90,73 @@ public class Cors_Filter implements Filter {
 					
 					if ( userInfo == null ) {
 						erorrYN = YnTypeCode.YES.getValue();
-						header.setHeader(YnTypeCode.NO.getValue(), ResponseResultTypeCode.UNSUCCESS_MESSAGE.getValue(),
-								ResponseResultTypeCode.INVALID_OAUTH_USER_OR_PASSWORD.getDescription(), "");
+						responseResultTypeCode  = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.INVALID_OAUTH_USER_OR_PASSWORD.getValue() ); 
 					} else {
 						String secret_id = userInfo.getString("client_secret");
 						// Check Password
 						boolean check_pass = bCryptPasswordEncoder.matches(password, secret_id );
 						if ( !check_pass ) {
 							erorrYN = YnTypeCode.YES.getValue();
-							header.setHeader(YnTypeCode.NO.getValue(), ResponseResultTypeCode.UNSUCCESS_MESSAGE.getValue(),
-									ResponseResultTypeCode.INVALID_OAUTH_PASSWORD.getDescription(), "");
+							responseResultTypeCode  = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.INVALID_OAUTH_PASSWORD.getValue() ); 
 						}
 					}
 					
 				} catch ( Exception e ) {
 					e.printStackTrace();
 					erorrYN = YnTypeCode.YES.getValue();
-					header.setHeader(YnTypeCode.NO.getValue(), ResponseResultTypeCode.UNSUCCESS_MESSAGE.getValue(),
-							ResponseResultTypeCode.INVALID_OAUTH_USER_OR_PASSWORD.getDescription(), "");
+					responseResultTypeCode  = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.INVALID_OAUTH_USER_OR_PASSWORD.getValue() ); 
+					
 				}
+			/*==============================================================
+			 * 								STEP 2
+			 * 	  				Validate token is empty or not
+			 *==============================================================*/
+			} else if ( StringUtils.isNotBlank( requestTokenHeader ) ) {
 				
+				 if ( !requestTokenHeader.contains("bearer") ) {
+						erorrYN = YnTypeCode.YES.getValue();
+						responseResultTypeCode  = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.INVALID_BEARER.getValue() ); 
+				} else if ( requestTokenHeader.contains("bearer") ) {
+					// bearer 16045045-50fc-40ef-8d18-daa1a4797e30
+					String token = StringUtils.substring( requestTokenHeader, 7, requestTokenHeader.length() );
+					
+					if ( StringUtils.isBlank( token ) ) {
+						erorrYN = YnTypeCode.YES.getValue();
+						responseResultTypeCode  = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.INVALID_TOKEN.getValue() ); 
+					}
+				} 
+				
+			/*==============================================================
+			 * 							STEP 3
+			 * 				Validate Authorization is empty or not
+			 *==============================================================*/	
+			} else if ( StringUtils.isBlank( requestTokenHeader ) ) {
+				erorrYN = YnTypeCode.YES.getValue();
+				responseResultTypeCode  = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.INVALID_AUTHORIZATION.getValue() ); 
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			erorrYN = YnTypeCode.YES.getValue();
-			header.setHeader(YnTypeCode.NO.getValue(), ResponseResultTypeCode.UNSUCCESS_MESSAGE.getValue(),
-					ResponseResultTypeCode.GENERAL_MESSAGE.getDescription(), "");
+			responseResultTypeCode = ResponseResultTypeCode.getReponseMessage( ResponseResultTypeCode.GENERAL_MESSAGE.getValue() ); // General System Error
 		}
-		/*==============================================
-		 * 				 Format Error Response
-		 *==============================================*/
+		
+		
+		/*==============================================================
+		 * 							STEP 4
+		 * 				 	 Format Error Response
+		 *==============================================================*/
 		if (erorrYN.equals(YnTypeCode.YES.getValue())) {
+			
+			header.setHeader(YnTypeCode.NO.getValue(), ResponseResultTypeCode.UNSUCCESS_MESSAGE.getValue(), responseResultTypeCode.getDescription(), "");
 			responseData.setHeader(header);
 			RenderUtil.renderJson( res, responseData);
 			return ;
 			
-		/*=============================================
-		 * 					Success 
-		 *=============================================*/
+		/*==============================================================
+		 * 							STEP 5
+		 * 						OH LA LA OH LA LA 
+		 *==============================================================*/
 		} else {
 			if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
 				response.setStatus(HttpServletResponse.SC_OK);

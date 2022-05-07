@@ -37,7 +37,10 @@ public enum ResponseResultTypeCode {
 	// OAUTH Message Start with 4001
 	INVALID_OAUTH_USER ( "4001", "Invalid client_id "),
 	INVALID_OAUTH_PASSWORD ( "4002", "Invalid  client_secret"),
-	INVALID_OAUTH_USER_OR_PASSWORD ( "4001", "Invalid client_id or client_secret");
+	INVALID_OAUTH_USER_OR_PASSWORD ( "4001", "Invalid client_id or client_secret"),
+	INVALID_AUTHORIZATION ( "4003", "Authorization is empty"),
+	INVALID_TOKEN  ( "4004", "Token is empty"),
+	INVALID_BEARER  ( "4005", "Bearer  is empty");
 	
 	private String value;
 	private String description;
