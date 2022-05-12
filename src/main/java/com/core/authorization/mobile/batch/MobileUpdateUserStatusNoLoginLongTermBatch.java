@@ -24,7 +24,7 @@ public class MobileUpdateUserStatusNoLoginLongTermBatch {
 		private MobileUserDAO mobileUserDAO;
 		@Autowired
 		PlatformTransactionManager txManager;
-		// Example
+		//	Example
 		//	"0 0 * * * *"                 the top of every hour of every day.
 		//	"*/10 * * * * *"              every ten seconds.
 		//	"0 0 8-10 * * *"              8, 9 and 10 o'clock of every day.
@@ -32,6 +32,7 @@ public class MobileUpdateUserStatusNoLoginLongTermBatch {
 		//	"0 0 9-17 * * MON-FRI"        on the hour nine-to-five weekdays
 		//	"0 0 0 25 12 ?"               every Christmas Day at midnight
 		
+		// second, minute, hour, day of month, month, day(s) of week
 		@Scheduled(cron = "0 0 15 * * *" )  // run every day at 13 PM 
 		public void launchJob() throws Exception {
 			
