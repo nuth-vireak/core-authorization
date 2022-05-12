@@ -91,7 +91,7 @@ CREATE TABLE merchant.menu_d (
 ----------- Numeric Table-------------------------
 INSERT INTO MERCHANT.NUMERIC_M
 (nmbr_dvcd,NMBR_STCD, nmbr_div_nm, nmbr_seqno_fgrs_cnt, nmbr_strt_no, nmbr_end_no ,frst_reg_dt, frst_reg_time, last_chng_dt, last_chng_time)
-VALUES('PUS001', '01', 'Push Transaction SeqNo', 10, 100, 9999999999, '20220505', '104646822', '20220505', '111541198');
+VALUES('PUS001', '01', 'Push Transaction SeqNo', 10, 1, 9999999999, '20220505', '104646822', '20220505', '111541198');
 
 CREATE TABLE MERCHANT.NUMERIC_M (
 	NMBR_DVCD VARCHAR(6) NOT NULL ,

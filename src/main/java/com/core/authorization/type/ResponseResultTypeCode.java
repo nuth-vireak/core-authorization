@@ -10,6 +10,7 @@ public enum ResponseResultTypeCode {
 	USERID_IS_REQUIRED( "1002", "UserID is required " ),
 	NUMERING_TYPE_CODE_EMPTY( "1003", "Numering type code is empty " ),
 	NUMERING_INFO_NOT_FOUND( "1004", "Numering info not found" ),
+	NUMERING_DETAIL_INSER_OR_UPDATE_ERROR( "1005", "Numering detail insert or update error" ),
 	
 	// User Information Message start with 2001
 	USER_NOT_FOUND( "2001" , "UserID not found " ),

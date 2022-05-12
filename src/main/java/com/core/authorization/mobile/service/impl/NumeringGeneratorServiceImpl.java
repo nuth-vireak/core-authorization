@@ -21,12 +21,15 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
+import com.core.authorization.mobile.repository.NumeringDetailDAO;
 import com.core.authorization.mobile.repository.NumeringInfoDAO;
 import com.core.authorization.mobile.service.NumeringGeneratorService;
 import com.core.authorization.type.ResponseResultTypeCode;
 import com.core.authorization.type.YnTypeCode;
+import com.core.authorization.util.TypeConversionUtil;
 
 import jara.platform.collection.GData;
+import jara.util.GDateUtil;
 
 /**
 * <PRE>
@@ -43,9 +46,12 @@ public class NumeringGeneratorServiceImpl implements NumeringGeneratorService {
 	PlatformTransactionManager txManager;
 	@Autowired
 	private NumeringInfoDAO numeringInfoDAO;
+	@Autowired
+	private NumeringDetailDAO numeringDetailDAO;
 	
 	@Override
 	public GData getNumeringCommitTx( GData inputData ) throws Exception {
+		
 		/*=============================================================
 		 *  Open new transaction in case error rollback transaction
 		 *=============================================================*/
@@ -55,19 +61,19 @@ public class NumeringGeneratorServiceImpl implements NumeringGeneratorService {
 		
 		try {
 			
-			String sLastNumeringItem 	= "";
-			String resultDigit			= "";
-			String sNumeringContent		= "";
-			String existingYN			= YnTypeCode.NO.getValue(); // Y: Update, N: Register
+			String sLastNmbrItem 			= StringUtils.EMPTY; 
+			String sNmbrCtnt				= StringUtils.EMPTY;	
+			String sNmbrDscExisYn 			= YnTypeCode.NO.getValue(); 
 			
-			BigDecimal bdLastNo			= BigDecimal.ZERO;
-			BigDecimal bdNextNumeringNo	= BigDecimal.ZERO;
-			BigDecimal bdNumeringStartNo	= BigDecimal.ZERO;
+			BigDecimal bdLastNo				= BigDecimal.ZERO;
+			BigDecimal bdNxtrNmbrNo 		= BigDecimal.ZERO;
+			BigDecimal bdNmbrStrtNo			= BigDecimal.ZERO;
 			
-			GData selectNumeringDetail	= new GData();
-			GData selectNumeringInfo	= new GData();
-			GData iNumeringDetail		= new GData();
+			GData selectNumberingDetail 	= new GData();
+			GData selectNumberingInfo		= new GData();
+			GData iNumberingDetail			= new GData();
 			
+
 			String numberingTypeCode = inputData.getString( "numberingTypeCode" );
 			String numberingCombinationCodeDetail = inputData.getString( "numberingCombinationCodeDetail" );
 			
@@ -75,28 +81,90 @@ public class NumeringGeneratorServiceImpl implements NumeringGeneratorService {
 				throw new Exception( ResponseResultTypeCode.NUMERING_TYPE_CODE_EMPTY.getValue() );
 			}
 			
-			/*=========================================================================
-			 * 							Validate Numering Info						
-			 *=========================================================================*/
 			try {
-				selectNumeringInfo = numeringInfoDAO.retrieveNumeringInfo( inputData );	
-				if ( selectNumeringInfo == null ) {
+				selectNumberingInfo = numeringInfoDAO.retrieveNumeringInfo( inputData );
+				if ( selectNumberingInfo == null ) {
 					throw new Exception( ResponseResultTypeCode.NUMERING_INFO_NOT_FOUND.getValue() );
 				}
-			} catch (Exception e) {
+			} catch ( Exception e ) {
 				throw new Exception( ResponseResultTypeCode.NUMERING_INFO_NOT_FOUND.getValue() );
 			}
-			/*=========================================================================
-			 * 							Check Numering Detail							
-			 *=========================================================================*/
 			
+			try {
+				selectNumberingDetail = numeringDetailDAO.retrieveNumberingDetailForUpdate( inputData );
+				if ( selectNumberingDetail  ==  null ) {
+					sNmbrDscExisYn =  YnTypeCode.NO.getValue();
+				} else {
+					sNmbrDscExisYn = YnTypeCode.YES.getValue();
+				}
+			} catch ( Exception e ) {
+				sNmbrDscExisYn = YnTypeCode.NO.getValue();
+			}
+			
+			if( YnTypeCode.YES.getValue().equals(sNmbrDscExisYn)) {
+				
+				bdNmbrStrtNo = selectNumberingInfo.getBigDecimal( "numberingStartNo" );
+				bdNxtrNmbrNo = selectNumberingDetail.getBigDecimal( "numberingLastNo" );
+				
+				if( TypeConversionUtil.toLong(bdNmbrStrtNo) > TypeConversionUtil.toLong(bdNxtrNmbrNo)) {
+					
+					bdLastNo = bdNmbrStrtNo;
+					
+				} else {
+					
+					bdLastNo = bdNxtrNmbrNo.add( BigDecimal.ONE) ; 
+				}
+			} else {
+				bdLastNo = bdNmbrStrtNo.add( BigDecimal.ONE) ; 
+			}
+			
+			// check Digit
+			int iDigit = TypeConversionUtil.toInteger( selectNumberingInfo.getBigDecimal( "numberingSeqNoDigit" ) );
+			// padding
+			sNmbrCtnt = StringUtils.leftPad( TypeConversionUtil.toString( bdLastNo ) + "", iDigit, "0" );
+			
+			sLastNmbrItem =  sNmbrCtnt.toString();
+			outputData.setString( "cmptNumbering", sLastNmbrItem )            ;
+				
+			try {
+				
+				if ( YnTypeCode.NO.getValue().equals (sNmbrDscExisYn ) ) {
+					
+					iNumberingDetail.setString( "numberingTypeCode"             , numberingTypeCode );
+					iNumberingDetail.setString( "numberingCombinationCodeDetail", numberingCombinationCodeDetail );
+					iNumberingDetail.setBigDecimal( "numberingLastNo"           , bdLastNo );
+					iNumberingDetail.setString( "firstRegisterDate"             , GDateUtil.getCurrentDate() );
+					iNumberingDetail.setString( "firstRegisterTime"             , GDateUtil.getCurrentTime() );
+					iNumberingDetail.setString( "lastTransactionDate"           , GDateUtil.getCurrentDate() );
+					iNumberingDetail.setString( "lastChangeDate"                , GDateUtil.getCurrentDate() );
+					iNumberingDetail.setString( "lastChangeTime"                , GDateUtil.getCurrentTime() );
+					
+					numeringDetailDAO.registerNumberingDetail(iNumberingDetail);
+					
+				} else {
+					selectNumberingDetail.setString("numberingTypeCode", 				numberingTypeCode);
+					selectNumberingDetail.setString("numberingCombinationCodeDetail", 	numberingCombinationCodeDetail);
+					selectNumberingDetail.setBigDecimal( "numberingLastNo"           , 	bdLastNo );
+					selectNumberingDetail.setString( "lastTransactionDate"           , 	GDateUtil.getCurrentDate() );
+					selectNumberingDetail.setString( "lastChangeDate"                , 	GDateUtil.getCurrentDate() );
+					selectNumberingDetail.setString( "lastChangeTime"                , 	GDateUtil.getCurrentTime() );
+					
+					numeringDetailDAO.updateNumberingDetail(selectNumberingDetail);
+					
+				}
+				
+			} catch ( Exception e ) {
+				e.printStackTrace();
+				throw new Exception(  ResponseResultTypeCode.NUMERING_DETAIL_INSER_OR_UPDATE_ERROR.getValue() );
+			} 
 			
 			txManager.commit( transaction );
 		} catch (Exception e) {
 			txManager.rollback( transaction );
+			e.printStackTrace();
 			throw e;
 		}
-		return null;
+		return outputData;	
 	}
 
 }

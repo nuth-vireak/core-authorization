@@ -22,7 +22,7 @@
 
 	<insert id="registerNumberingDetail">
 	<![CDATA[
-		INSERT INTO COPCO_CACCE_I (
+		INSERT INTO MERCHANT.NUMERIC_I (
 					NMBR_DVCD   			
 				, NMBR_UNION_CD_CTNT    	
 				, NMBR_LAST_NO     						
@@ -46,14 +46,14 @@
 
 	<update id="updateNumberingDetail">
 	<![CDATA[
-		UPDATE COPCO_CACCE_I
+		UPDATE MERCHANT.NUMERIC_I
 		  SET
-			, NMBR_LAST_NO     		= #{numberingLastNo}   				
+			  NMBR_LAST_NO     		= #{numberingLastNo}   				
 			, LAST_TX_DT     		= #{lastTransactionDate}    		
 			, LAST_CHNG_DT	 		= #{lastChangeDate}				
 			, LAST_CHNG_TIME 		= #{lastChangeTime}				
-		WHERE NMBR_DVCD = #{numberingTypeCode}							
-		  AND NMBR_UNION_CD_CTNT = #{numberingCombinationCodeDetail}	
+		WHERE 	NMBR_DVCD 				= #{numberingTypeCode}							
+		  		AND NMBR_UNION_CD_CTNT 	= #{numberingCombinationCodeDetail}	
 	]]>
 	</update>
 
