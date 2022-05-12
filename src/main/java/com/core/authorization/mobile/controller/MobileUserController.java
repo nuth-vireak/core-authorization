@@ -43,7 +43,7 @@ public class MobileUserController {
 	private MobileUserService mobileUserService;
 	
 	/**
-	 * -- detail description --
+	 * -- Retrieve User Login --
 	 *
 	 * @serviceID 
 	 * @logicalName 
@@ -53,7 +53,7 @@ public class MobileUserController {
 	 * @exception 
 	 * @fullPath 
 	 */
-	@PostMapping( value = ControllerName.MOBILE_RETRIEVE_USER_LOGIN )
+	@PostMapping( value = ControllerName.MOBILE_RETRIEVE_USER_LOGIN ) // => MBUSER1011
 	public ResponseData<GData> retrieveUserLogin( @RequestBody RequestData<GData> inputData  ) throws Exception {
 		
 		/*=============================================
@@ -96,7 +96,7 @@ public class MobileUserController {
 	
 	
 	/**
-	 * -- detail description --
+	 * -- Register User Info --
 	 *
 	 * @serviceID 
 	 * @logicalName 
@@ -106,7 +106,7 @@ public class MobileUserController {
 	 * @exception 
 	 * @fullPath 
 	 */
-	@PostMapping( value = ControllerName.MOBILE_REGISTER_USER_INFO )
+	@PostMapping( value = ControllerName.MOBILE_REGISTER_USER_INFO ) // => MBUSER1021
 	public ResponseData<GData> registerUserInfo( @RequestBody RequestData<GData> inputData ) throws Exception {
 		
 		/*=============================================
