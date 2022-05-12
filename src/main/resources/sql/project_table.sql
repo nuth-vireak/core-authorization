@@ -88,6 +88,55 @@ CREATE TABLE merchant.menu_d (
 	CONSTRAINT pk_ebcib_cmbun_d PRIMARY KEY (inbn_lvel1_menu_cd, inbn_lvel2_menu_cd, inbn_prog_dvcd, user_id)
 );
 
+----------- Numeric Table-------------------------
+INSERT INTO MERCHANT.NUMERIC_M
+(nmbr_dvcd,NMBR_STCD, nmbr_div_nm, nmbr_seqno_fgrs_cnt, nmbr_strt_no, nmbr_end_no ,frst_reg_dt, frst_reg_time, last_chng_dt, last_chng_time)
+VALUES('PUS001', '01', 'Push Transaction SeqNo', 10, 100, 9999999999, '20220505', '104646822', '20220505', '111541198');
+
+CREATE TABLE MERCHANT.NUMERIC_M (
+	NMBR_DVCD VARCHAR(6) NOT NULL ,
+	NMBR_STCD VARCHAR(2) NOT NULL DEFAULT ''::CHARACTER VARYING,
+	NMBR_DIV_NM VARCHAR(100) NOT NULL default ''::CHARACTER VARYING,
+	NMBR_SEQNO_FGRS_CNT NUMERIC(2) NOT NULL,
+	NMBR_STRT_NO NUMERIC(16) NOT NULL,
+	NMBR_END_NO NUMERIC(16) NOT NULL,
+	FRST_REG_DT VARCHAR(8) NOT NULL DEFAULT''::CHARACTER VARYING,
+	FRST_REG_TIME VARCHAR(9) NOT NULL DEFAULT''::CHARACTER VARYING,
+	LAST_CHNG_DT VARCHAR(8) NOT NULL DEFAULT''::CHARACTER VARYING,
+	LAST_CHNG_TIME VARCHAR(9) NOT NULL DEFAULT''::CHARACTER VARYING,
+	CONSTRAINT PK_COPCO_CACCE_M PRIMARY KEY (NMBR_DVCD)
+)
+comment on column MERCHANT.NUMERIC_M.NMBR_DVCD is 'NumberingTypeCode';
+comment on column MERCHANT.NUMERIC_M.NMBR_STCD is 'NumeringStatusCode';
+comment on column MERCHANT.NUMERIC_M.NMBR_DIV_NM is 'NumeringTypeName';
+comment on column MERCHANT.NUMERIC_M.NMBR_SEQNO_FGRS_CNT is 'NumeringSeqNoDigit';
+comment on column MERCHANT.NUMERIC_M.NMBR_STRT_NO is 'NumeringStartNo';
+comment on column MERCHANT.NUMERIC_M.NMBR_END_NO is 'NumeringEndNo';
+comment on column MERCHANT.NUMERIC_M.FRST_REG_DT is 'FirstRegisterDate';
+comment on column MERCHANT.NUMERIC_M.FRST_REG_TIME is 'FirstRegisterTime';
+comment on column MERCHANT.NUMERIC_M.LAST_CHNG_DT is 'LastRegisterDate';
+comment on column MERCHANT.NUMERIC_M.LAST_CHNG_TIME is 'LastRegisterTime';
+
+------------------- Numeric Detail --------------------------
+
+CREATE TABLE MERCHANT.NUMERIC_I (
+	NMBR_DVCD VARCHAR(6) NOT NULL,
+	NMBR_UNION_CD_CTNT VARCHAR(100) NOT NULL,
+	NMBR_LAST_NO NUMERIC(16) NOT NULL,
+	LAST_TX_DT VARCHAR(8) NOT NULL,
+	FRST_REG_DT VARCHAR(8) NOT NULL,
+	FRST_REG_TIME VARCHAR(9) NOT NULL,
+	LAST_CHNG_DT VARCHAR(8) NOT NULL,
+	LAST_CHNG_TIME VARCHAR(9) NOT NULL,
+	CONSTRAINT PK_COPCO_CACCE_I PRIMARY KEY (NMBR_DVCD, NMBR_UNION_CD_CTNT)
+)
+comment on column MERCHANT.NUMERIC_I.NMBR_DVCD is 'NumericTypeCode';
+comment on column MERCHANT.NUMERIC_I.NMBR_UNION_CD_CTNT is 'NumericCombinationCodeDetail';
+comment on column MERCHANT.NUMERIC_I.NMBR_LAST_NO is 'NumericLastSeqNo';
+comment on column MERCHANT.NUMERIC_I.FRST_REG_DT is 'FirstRegisterDate';
+comment on column MERCHANT.NUMERIC_I.FRST_REG_TIME is 'FirstRegisterTime';
+comment on column MERCHANT.NUMERIC_I.LAST_CHNG_DT is 'LastRegisterDate';
+comment on column MERCHANT.NUMERIC_I.LAST_CHNG_TIME is 'LastRegisterTime';
 
 
 --------------- FOR OAUTH --------------------

@@ -8,6 +8,8 @@ public enum ResponseResultTypeCode {
 	// Common Message Start with 1001
 	BODY_DATA_IS_EMPTY( "1001", "Data body is empty or null"  ),
 	USERID_IS_REQUIRED( "1002", "UserID is required " ),
+	NUMERING_TYPE_CODE_EMPTY( "1003", "Numering type code is empty " ),
+	NUMERING_INFO_NOT_FOUND( "1004", "Numering info not found" ),
 	
 	// User Information Message start with 2001
 	USER_NOT_FOUND( "2001" , "UserID not found " ),

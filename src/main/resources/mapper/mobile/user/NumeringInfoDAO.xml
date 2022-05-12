@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.core.authorization.mobile.repository.NumeringInfoDAO">
+
+	<select id="retrieveNumeringInfo" resultType="GData">
+	<![CDATA[
+		SELECT	NMBR_DVCD              		AS "numberingTypeCode"             	
+				, NMBR_STCD               	AS "numberingStatusCode"           	
+				, NMBR_DIV_NM              	AS "numberingTypeName"            	
+				, NMBR_SEQNO_FGRS_CNT     	AS "numberingSeqNoDigit"     		
+				, NMBR_STRT_NO				AS "numberingStartNo"	        	
+				, NMBR_END_NO             	AS "numberingEndNo"            		
+				, FRST_REG_DT				AS "firstRegisterDate"				
+				, FRST_REG_TIME				AS "firstRegisterTime"				
+				, LAST_CHNG_DT				AS "lastChangeDate"					
+				, LAST_CHNG_TIME			AS "lastChangeTime"					
+		FROM MERCHANT.NUMERIC_M 
+		WHERE NMBR_DVCD = #{numberingTypeCode} 
+	]]>
+	</select>
+
+	
+
+</mapper>

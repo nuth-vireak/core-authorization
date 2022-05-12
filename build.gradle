@@ -41,6 +41,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
     
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-batch
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: '2.6.4'
     
 }
 
