@@ -47,24 +47,37 @@ CREATE TABLE merchant.users_d (
 
 -- Drop table
 
--- DROP TABLE merchant.menu_i;
+-- DROP TABLE merchant.menu_master;
 
-CREATE TABLE merchant.menu_i (
+CREATE TABLE merchant.menu_master (
 	seqno numeric(10) NOT NULL,
-	inbn_prog_dvcd varchar(1) NOT NULL DEFAULT ''::character varying,
-	inbn_lvel1_menu_cd varchar(20) NOT NULL DEFAULT ''::character varying,
-	inbn_lvel2_menu_cd varchar(20) NOT NULL DEFAULT ''::character varying,
-	inbn_lvel1_menu_desc varchar(100) NOT NULL DEFAULT ''::character varying,
-	inbn_lvel2_menu_desc varchar(100) NOT NULL DEFAULT ''::character varying,
-	inbn_menu_use_auth_dvcd varchar(1) NOT NULL DEFAULT ''::character varying,
+	lvel1_menu_cd varchar(20) NOT NULL DEFAULT ''::character varying, --- page short name
+	lvel2_menu_cd varchar(20) NOT NULL DEFAULT ''::character varying,  -- 
+	lvel1_menu_desc varchar(100) NOT NULL DEFAULT ''::character varying,
+	lvel2_menu_desc varchar(100) NOT NULL DEFAULT ''::character varying,
+	menu_use_auth_dvcd varchar(1) NOT NULL DEFAULT ''::character varying, -- 2 using: 0: For Master User only 
 	crtn_id varchar(20) NOT NULL DEFAULT ''::character varying,
 	crtn_dttm timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updt_id varchar(20) NOT NULL DEFAULT ''::character varying,
 	updt_dttm timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	inbn_menu_show_yn varchar(1) NOT NULL DEFAULT ''::character varying,
+	menu_show_yn varchar(1) NOT NULL DEFAULT ''::character varying,
 	menu_uri varchar(100) NOT NULL DEFAULT ''::character varying,
-	CONSTRAINT pk_ebcib_cmenu_i PRIMARY KEY (seqno)
+	CONSTRAINT pk_menu_m PRIMARY KEY (seqno)
 );
+
+INSERT INTO merchant.MENU_MASTER
+(seqno, lvel1_menu_cd, lvel2_menu_cd, lvel1_menu_desc, lvel2_menu_desc, menu_use_auth_dvcd, crtn_id, crtn_dttm, updt_id, updt_dttm, menu_show_yn, menu_uri)
+VALUES(100, 'USR', 'USR0100', 'usermanagement', 'registeruser', '0', 'admin', '2021-04-05 11:40:00.000', 'admin', '2021-04-05 11:40:00.000', 'Y', 'User Management > Register User');
+INSERT INTO merchant.MENU_MASTER
+(seqno, lvel1_menu_cd, lvel2_menu_cd, lvel1_menu_desc, lvel2_menu_desc, menu_use_auth_dvcd, crtn_id, crtn_dttm, updt_id, updt_dttm, menu_show_yn, menu_uri)
+VALUES(101, 'USR', 'USR0200', 'usermanagement', 'userinformation', '0', 'admin', '2021-04-05 11:40:00.000', 'admin', '2021-04-05 11:40:00.000', 'Y', 'User Management > User Information');
+INSERT INTO merchant.MENU_MASTER
+(seqno, lvel1_menu_cd, lvel2_menu_cd, lvel1_menu_desc, lvel2_menu_desc, menu_use_auth_dvcd, crtn_id, crtn_dttm, updt_id, updt_dttm, menu_show_yn, menu_uri)
+VALUES(102, 'MCT', 'MCT0100', 'merchantmanagement', 'registermerchant', '2', 'admin', '2021-04-05 11:40:00.000', 'admin', '2021-04-05 11:40:00.000', 'Y', 'Merchant Management > Register Merchant');
+INSERT INTO merchant.MENU_MASTER
+(seqno, lvel1_menu_cd, lvel2_menu_cd, lvel1_menu_desc, lvel2_menu_desc, menu_use_auth_dvcd, crtn_id, crtn_dttm, updt_id, updt_dttm, menu_show_yn, menu_uri)
+VALUES(103, 'MCT', 'MCT0200', 'merchantmanagement', 'merchantinformation', '2', 'admin', '2021-04-05 11:40:00.000', 'admin', '2021-04-05 11:40:00.000', 'Y', 'Merchant Management > Merchant Information');
+
 
 
 
@@ -72,12 +85,11 @@ CREATE TABLE merchant.menu_i (
 
 -- DROP TABLE merchant.menu_d;
 
-CREATE TABLE merchant.menu_d (
+CREATE TABLE merchant.menu_detail (
 	user_id varchar(20) NOT NULL,
-	inbn_prog_dvcd varchar(1) NOT NULL,
-	inbn_lvel1_menu_cd varchar(20) NOT NULL,
-	inbn_lvel2_menu_cd varchar(20) NOT NULL,
-	inbn_menu_use_auth_dvcd varchar(1) NOT NULL DEFAULT ''::character varying,
+	lvel1_menu_cd varchar(20) NOT NULL,
+	lvel2_menu_cd varchar(20) NOT NULL,
+	menu_use_auth_dvcd varchar(1) NOT NULL DEFAULT ''::character varying, -- 2: using: 3 : remove
 	reg_dt varchar(8) NOT NULL DEFAULT ''::character varying,
 	chng_dt varchar(8) NOT NULL DEFAULT ''::character varying,
 	cls_dt varchar(8) NOT NULL DEFAULT ''::character varying,
@@ -85,7 +97,7 @@ CREATE TABLE merchant.menu_d (
 	crtn_dttm timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updt_id varchar(20) NOT NULL DEFAULT ''::character varying,
 	updt_dttm timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT pk_ebcib_cmbun_d PRIMARY KEY (inbn_lvel1_menu_cd, inbn_lvel2_menu_cd, inbn_prog_dvcd, user_id)
+	CONSTRAINT pk_menu_detail PRIMARY KEY (lvel1_menu_cd, lvel2_menu_cd, user_id)
 );
 
 ----------- Numeric Table-------------------------
